@@ -1,4 +1,4 @@
-import homeData from "@/mocks/screens/home.json";
+import homeDataRaw from "@/mocks/screens/home.json";
 
 interface MockScreenDataset {
   screenId: string;
@@ -7,15 +7,19 @@ interface MockScreenDataset {
   payload: Record<string, unknown>;
 }
 
+const homeData = homeDataRaw as MockScreenDataset;
+
 const datasetSchemaGuard = (input: unknown): input is MockScreenDataset => {
   if (typeof input !== "object" || input === null) {
     return false;
   }
   const data = input as Partial<MockScreenDataset>;
+  const validSources: readonly string[] = ["manual", "generated", "copied-from-api"];
   return (
     typeof data.screenId === "string" &&
     typeof data.version === "string" &&
     typeof data.source === "string" &&
+    validSources.includes(data.source) &&
     typeof data.payload === "object" &&
     data.payload !== null
   );
