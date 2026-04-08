@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import type { PropsWithChildren } from "react";
 
+import { Providers } from "./providers";
 import { SkipLink } from "@/components/molecules/skip-link";
 
 import "./globals.css";
-import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: "Patient Portal",

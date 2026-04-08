@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* global process */
 import { runValidate } from "./validate.mjs";
 
 export const runPrecommitValidate = ({ runner = runValidate } = {}) => runner();
