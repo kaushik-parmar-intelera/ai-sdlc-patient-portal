@@ -1,6 +1,6 @@
+import { getEnvironmentProfile } from "@/lib/config/environment-profile";
 import { getMockScreen } from "@/mocks/screens";
 import { requestJson } from "@/services/api/http-client";
-import { getEnvironmentProfile } from "@/lib/config/environment-profile";
 
 export interface StartupPayload {
   title: string;
@@ -13,7 +13,17 @@ export const fetchStartupPayload = async (): Promise<StartupPayload> => {
 
   if (env.enableMockMode) {
     const mock = getMockScreen("home");
-    return mock.payload as StartupPayload;
+    const payload = mock.payload as unknown;
+    if (
+      typeof payload === "object" &&
+      payload !== null &&
+      "title" in payload &&
+      "subtitle" in payload &&
+      "items" in payload
+    ) {
+      return payload as StartupPayload;
+    }
+    throw new Error("Invalid mock payload structure for startup");
   }
 
   return requestJson<StartupPayload>(`${env.apiBaseUrl}/startup`, {

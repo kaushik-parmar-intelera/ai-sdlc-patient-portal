@@ -1,7 +1,6 @@
+import importPlugin from "eslint-plugin-import";
 import js from "@eslint/js";
 import tseslint from "typescript-eslint";
-import nextPlugin from "eslint-config-next";
-import importPlugin from "eslint-plugin-import";
 
 export default [
   {
@@ -17,7 +16,6 @@ export default [
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
-  ...nextPlugin,
   {
     plugins: {
       import: importPlugin,

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* global process */
 import { spawnSync } from "node:child_process";
 
 export const validateCommandPlan = [
