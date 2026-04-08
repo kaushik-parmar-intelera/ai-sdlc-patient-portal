@@ -13,6 +13,9 @@ coverage/
 .env.*
 !.env.example
 
+# MCP configuration with secrets
+mcp.json
+
 # Logs
 *.log
 npm-debug.log*
