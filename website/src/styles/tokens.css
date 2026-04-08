@@ -1,0 +1,23 @@
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --surface: #ffffff;
+  --brand: #0ea5e9;
+  --brand-strong: #0369a1;
+  --success: #16a34a;
+  --error: #dc2626;
+  --muted: #64748b;
+  --focus-ring: #22d3ee;
+}
+
+[data-theme="dark"] {
+  --background: #020617;
+  --foreground: #e2e8f0;
+  --surface: #0f172a;
+  --brand: #38bdf8;
+  --brand-strong: #0ea5e9;
+  --success: #4ade80;
+  --error: #f87171;
+  --muted: #94a3b8;
+  --focus-ring: #67e8f9;
+}

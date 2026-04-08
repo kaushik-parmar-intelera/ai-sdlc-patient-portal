@@ -1,0 +1,14 @@
+{
+  "screenId": "home",
+  "version": "1.0.0",
+  "source": "manual",
+  "payload": {
+    "title": "Patient Portal",
+    "subtitle": "Secure access to care services",
+    "items": [
+      "Browse services",
+      "Book appointments",
+      "Manage profile"
+    ]
+  }
+}
