@@ -10,6 +10,7 @@ export interface RouteDefinition {
 }
 
 export const routeDefinitions: RouteDefinition[] = [
+  // ── Public routes ────────────────────────────────────────
   {
     id: "home",
     path: "/",
@@ -19,8 +20,8 @@ export const routeDefinitions: RouteDefinition[] = [
     requiredPermissions: [],
   },
   {
-    id: "public-home",
-    path: "/public",
+    id: "login",
+    path: "/login",
     group: "public",
     layout: "public",
     preloadPolicy: "lazy",
@@ -34,9 +35,51 @@ export const routeDefinitions: RouteDefinition[] = [
     preloadPolicy: "lazy",
     requiredPermissions: [],
   },
+
+  // ── Private routes ───────────────────────────────────────
   {
-    id: "private-home",
-    path: "/private",
+    id: "dashboard",
+    path: "/dashboard",
+    group: "private",
+    layout: "private",
+    preloadPolicy: "eager",
+    requiredPermissions: ["session:authenticated"],
+  },
+  {
+    id: "profile",
+    path: "/profile",
+    group: "private",
+    layout: "private",
+    preloadPolicy: "lazy",
+    requiredPermissions: ["session:authenticated"],
+  },
+  {
+    id: "appointments",
+    path: "/appointments",
+    group: "private",
+    layout: "private",
+    preloadPolicy: "lazy",
+    requiredPermissions: ["session:authenticated"],
+  },
+  {
+    id: "messages",
+    path: "/messages",
+    group: "private",
+    layout: "private",
+    preloadPolicy: "lazy",
+    requiredPermissions: ["session:authenticated"],
+  },
+  {
+    id: "prescriptions",
+    path: "/prescriptions",
+    group: "private",
+    layout: "private",
+    preloadPolicy: "lazy",
+    requiredPermissions: ["session:authenticated"],
+  },
+  {
+    id: "lab-results",
+    path: "/lab-results",
     group: "private",
     layout: "private",
     preloadPolicy: "lazy",
@@ -45,4 +88,6 @@ export const routeDefinitions: RouteDefinition[] = [
 ];
 
 export const isPrivatePath = (path: string): boolean =>
-  routeDefinitions.some((route) => route.path === path && route.group === "private");
+  routeDefinitions.some(
+    (route) => route.path === path && route.group === "private"
+  );
