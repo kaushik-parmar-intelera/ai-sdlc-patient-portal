@@ -1,4 +1,4 @@
-import { test, expect, Page, devices } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 
 /**
  * E2E Test: Registration Accessibility
@@ -166,7 +166,7 @@ test.describe('Registration Accessibility', () => {
 
       // Error should be visible on email field
       const emailFieldContainer = emailInput.locator('..'); // parent
-      const error = emailFieldContainer.locator('text=/invalid|error/i');
+      const _error = emailFieldContainer.locator('text=/invalid|error/i');
       // Error might be visible
     });
 

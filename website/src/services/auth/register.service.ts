@@ -1,4 +1,4 @@
-import { RegistrationInput, RegistrationSuccess, RegistrationError } from '@/types/auth.types';
+import type { RegistrationInput, RegistrationSuccess, RegistrationError } from '@/types/auth.types';
 
 /**
  * Configuration for retry logic
@@ -71,7 +71,7 @@ export async function registerUser(
       });
 
       // Parse response body
-      let data: any;
+      let data: RegistrationSuccess | RegistrationError;
       try {
         data = await response.json();
       } catch {

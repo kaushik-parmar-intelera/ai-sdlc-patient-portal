@@ -125,7 +125,7 @@ test.describe('Registration Happy Path', () => {
 
     // Verify form has values
     const nameInput = page.locator('input[type="text"]');
-    let value = await nameInput.inputValue();
+    const value = await nameInput.inputValue();
     expect(value).toBe('Jane Doe');
 
     // Submit

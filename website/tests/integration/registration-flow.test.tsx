@@ -1,6 +1,7 @@
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
+
 import { RegistrationForm } from '@/components/molecules/registration-form';
 import { validRegistrationInput, mockResponses } from '@/mocks/auth/register.mock';
 

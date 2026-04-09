@@ -19,7 +19,7 @@ test.describe('Registration Error Scenarios', () => {
     // Intercept API calls for error simulation
     await page.route('**/api/auth/register', async (route) => {
       const request = route.request();
-      const url = request.url();
+      const _url = request.url();
 
       // Route based on test context (set via test data attributes)
       // In real tests, we'd use Playwright fixtures or route-based logic

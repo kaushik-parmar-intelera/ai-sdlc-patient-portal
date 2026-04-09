@@ -1,11 +1,12 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+
 import { FormInput } from '@/components/atoms/form-input';
-import { registerUser } from '@/services/auth/register.service';
 import { registrationSchema, type RegistrationInput } from '@/schemas/registration.schema';
+import { registerUser } from '@/services/auth/register.service';
 import { isRegistrationSuccess, isRegistrationError } from '@/types/auth.types';
 
 export interface RegistrationFormProps {

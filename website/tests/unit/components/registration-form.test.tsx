@@ -1,9 +1,10 @@
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
+
 import { RegistrationForm } from '@/components/molecules/registration-form';
-import { registerUser } from '@/services/auth/register.service';
 import { validRegistrationInput } from '@/mocks/auth/register.mock';
+import { registerUser } from '@/services/auth/register.service';
 
 jest.mock('@/services/auth/register.service');
 

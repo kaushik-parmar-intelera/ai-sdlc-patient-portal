@@ -1,5 +1,6 @@
-import { registerUser } from '@/services/auth/register.service';
 import { mockResponses, validRegistrationInput } from '@/mocks/auth/register.mock';
+import { registerUser } from '@/services/auth/register.service';
+import type { RegistrationError, RegistrationSuccess } from '@/types/auth.types';
 
 describe('registerUser API Service', () => {
   beforeEach(() => {
@@ -20,7 +21,7 @@ describe('registerUser API Service', () => {
       expect(result).toHaveProperty('userId');
       expect(result).toHaveProperty('email');
       expect(result).toHaveProperty('message');
-      expect((result as any).userId).toBe('usr_e7f4c2d9b1a5');
+      expect((result as RegistrationSuccess).userId).toBe('usr_e7f4c2d9b1a5');
     });
 
     it('should send correct request headers', async () => {
@@ -61,7 +62,7 @@ describe('registerUser API Service', () => {
       const result = await registerUser(validRegistrationInput);
 
       expect(result).toHaveProperty('errorCode');
-      expect((result as any).errorCode).toBe('INVALID_INPUT');
+      expect((result as RegistrationError).errorCode).toBe('INVALID_INPUT');
       expect(result).toHaveProperty('error');
     });
 
@@ -74,7 +75,7 @@ describe('registerUser API Service', () => {
 
       const result = await registerUser(validRegistrationInput);
 
-      expect((result as any).field).toBe('email');
+      expect((result as RegistrationError).field).toBe('email');
     });
   });
 
@@ -88,8 +89,8 @@ describe('registerUser API Service', () => {
 
       const result = await registerUser(validRegistrationInput);
 
-      expect((result as any).errorCode).toBe('EMAIL_EXISTS');
-      expect((result as any).error).toContain('Email already registered');
+      expect((result as RegistrationError).errorCode).toBe('EMAIL_EXISTS');
+      expect((result as RegistrationError).error).toContain('Email already registered');
     });
   });
 
@@ -103,9 +104,9 @@ describe('registerUser API Service', () => {
 
       const result = await registerUser(validRegistrationInput);
 
-      expect((result as any).errorCode).toBe('SERVER_ERROR');
-      expect((result as any).error).not.toContain('stack');
-      expect((result as any).error).toContain('Unable to create account');
+      expect((result as RegistrationError).errorCode).toBe('SERVER_ERROR');
+      expect((result as RegistrationError).error).not.toContain('stack');
+      expect((result as RegistrationError).error).toContain('Unable to create account');
     });
   });
 
@@ -118,8 +119,8 @@ describe('registerUser API Service', () => {
 
       const result = await registerUser(validRegistrationInput);
 
-      expect((result as any).errorCode).toBe('NETWORK_ERROR');
-      expect((result as any).error).toContain('internet connection');
+      expect((result as RegistrationError).errorCode).toBe('NETWORK_ERROR');
+      expect((result as RegistrationError).error).toContain('internet connection');
 
       (console.error as jest.Mock).mockRestore();
     });
@@ -147,7 +148,7 @@ describe('registerUser API Service', () => {
 
       const result = await promise;
 
-      expect((result as any).userId).toBe('usr_e7f4c2d9b1a5');
+      expect((result as RegistrationSuccess).userId).toBe('usr_e7f4c2d9b1a5');
       expect((global.fetch as jest.Mock).mock.calls.length).toBeGreaterThan(1);
 
       (console.error as jest.Mock).mockRestore();
@@ -167,7 +168,7 @@ describe('registerUser API Service', () => {
 
       const result = await promise;
 
-      expect((result as any).errorCode).toBe('NETWORK_ERROR');
+      expect((result as RegistrationError).errorCode).toBe('NETWORK_ERROR');
 
       (console.error as jest.Mock).mockRestore();
       jest.useRealTimers();

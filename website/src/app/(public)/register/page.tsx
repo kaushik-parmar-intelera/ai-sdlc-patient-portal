@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
 import { useRouter } from 'next/navigation';
+import React from 'react';
+
 import { RegistrationForm } from '@/components/molecules/registration-form';
 
 export default function RegisterPage() {
@@ -17,7 +18,6 @@ export default function RegisterPage() {
       <div className="hidden md:flex md:w-5/12 lg:w-1/2 relative bg-primary overflow-hidden">
         {/* Background image */}
         <div className="absolute inset-0 z-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt="Modern bright medical research laboratory with soft blue ambient lighting"
             className="w-full h-full object-cover opacity-60"

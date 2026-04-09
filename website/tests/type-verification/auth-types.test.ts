@@ -1,6 +1,6 @@
+import { registrationSchema, validateRegistration } from '@/schemas/registration.schema';
 import { RegistrationInput, RegistrationSuccess, RegistrationError, FormState } from '@/types/auth.types';
 import { isRegistrationSuccess, isRegistrationError } from '@/types/auth.types';
-import { registrationSchema, validateRegistration } from '@/schemas/registration.schema';
 
 // Test 1: RegistrationInput type exports
 const testRegistrationInput: RegistrationInput = {
