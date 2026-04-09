@@ -1,0 +1,50 @@
+{
+  "name": "mobile",
+  "version": "1.0.0",
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "./node_modules/node/bin/node ./node_modules/expo/bin/cli start",
+    "android": "./node_modules/node/bin/node ./node_modules/expo/bin/cli start --android",
+    "ios": "./node_modules/node/bin/node ./node_modules/expo/bin/cli start --ios",
+    "web": "./node_modules/node/bin/node ./node_modules/expo/bin/cli start --web",
+    "lint": "./node_modules/node/bin/node ./node_modules/eslint/bin/eslint.js .",
+    "test": "./node_modules/node/bin/node ./node_modules/jest/bin/jest.js --runInBand --watchman=false",
+    "typecheck": "./node_modules/node/bin/node ./node_modules/typescript/bin/tsc --noEmit"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "expo": "~54.0.33",
+    "expo-linear-gradient": "~15.0.8",
+    "expo-linking": "~8.0.11",
+    "expo-router": "~6.0.23",
+    "expo-status-bar": "~3.0.9",
+    "react": "19.1.0",
+    "react-dom": "^19.1.0",
+    "react-hook-form": "^7.72.1",
+    "react-native": "0.81.5",
+    "react-native-gesture-handler": "~2.28.0",
+    "react-native-reanimated": "~4.1.1",
+    "react-native-safe-area-context": "~5.6.0",
+    "react-native-screens": "~4.16.0",
+    "react-native-web": "^0.21.2",
+    "react-native-worklets": "0.5.1",
+    "zod": "^4.3.6",
+    "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react-native": "^13.3.3",
+    "@types/jest": "^30.0.0",
+    "@types/react": "~19.1.0",
+    "babel-preset-expo": "^55.0.16",
+    "eslint": "^10.2.0",
+    "jest": "^30.3.0",
+    "jest-expo": "^55.0.15",
+    "node": "^20.19.4",
+    "react-test-renderer": "19.1.0",
+    "typescript": "~5.9.2",
+    "typescript-eslint": "^8.58.1"
+  },
+  "private": true
+}

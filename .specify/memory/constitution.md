@@ -1,20 +1,20 @@
-<!-- 
-  SYNC IMPACT REPORT (v1.0.0)
-  ├─ Version Change: Template → 1.0.0 (initial adoption)
-  ├─ Principles Added:
-  │  ├─ I. Code Quality Excellence
-  │  ├─ II. Test-Driven Development
-  │  ├─ III. User Experience Consistency
-  │  └─ IV. Performance Requirements
-  ├─ Sections Added:
-  │  ├─ Platform Scope (Web, Mobile, Backend)
-  │  └─ Quality Gates & Review Standards
-  ├─ Templates Updated:
-  │  ├─ ✅ plan-template.md (Constitution Check alignment)
-  │  ├─ ✅ spec-template.md (User story requirements)
-  │  ├─ ✅ tasks-template.md (Quality task categorization)
-  │  └─ ⚠ Runtime guidance (docs/Developer-Handbook.md - suggested)
-  └─ Follow-up: None (all placeholders resolved)
+<!--
+SYNC IMPACT REPORT
+==================
+Version Change: 1.0.0 -> 1.1.0
+Modified Principles:
+  - III. User Experience Consistency -> III. Stitch-Driven Experience Consistency
+  - Quality Gates updated to require Stitch screen coverage and recovery-state review
+Added Sections:
+  - Design Source of Truth
+Removed Sections:
+  - None
+Templates Updated:
+  - ✅ .specify/templates/plan-template.md (already compatible; plan must reference Stitch inventory)
+  - ✅ .specify/templates/spec-template.md (already compatible; spec must enumerate design-backed stories)
+  - ✅ .specify/templates/tasks-template.md (already compatible; tasks must trace to design-backed flows)
+Deferred TODOs:
+  - None
 -->
 
 # AI SDLC Patient Portal - Constitution
@@ -28,172 +28,166 @@ Every deliverable MUST adhere to industry-standard code quality metrics and best
 - **Enforced Standards**:
   - Linting: ESLint, Pylint, SwiftLint (or equivalent) MUST run on every commit
   - Min Code Coverage: 80% for core business logic, 70% for UI/presentation layers
-  - Complexity: Cyclomatic complexity ≤ 5 per function (refactor if exceeded)
+  - Complexity: Cyclomatic complexity <= 5 per function (refactor if exceeded)
   - Duplication: Max 3% code duplication across repositories
-  
+
 - **Language-Specific Rules**:
   - Web (JS/TS): Strict mode enforced; no implicit types; use const/let only
-  - Mobile (iOS/Android): Follow SOLID principles; immutable data structures preferred
+  - Mobile (React Native/iOS/Android): Typed navigation, immutable UI state where practical, reusable screen primitives required
   - Backend (Python/Node): Type hints mandatory; docstrings for all public APIs
-  
-- **Rationale**: Consistent quality prevents technical debt, reduces debugging time, and ensures maintainability across web, mobile, and backend teams.
+
+- **Rationale**: Consistent quality prevents technical debt, reduces debugging time, and keeps cross-platform delivery maintainable.
 
 ### II. Test-Driven Development (NON-NEGOTIABLE)
 
-All new features MUST follow Test-First (Red-Green-Refactor) cycle:
+All new features MUST follow a test-first Red-Green-Refactor cycle:
 
 - **Mandatory Process**:
   1. User stories written and approved
-  2. Test cases derived and submitted for stakeholder review
-  3. Tests MUST fail initially (red)
-  4. Implementation proceeds (green)
-  5. Refactoring for quality (refactor)
-  
+  2. Acceptance tests derived from the spec and reviewed
+  3. Tests MUST fail initially
+  4. Implementation proceeds until tests pass
+  5. Refactoring preserves passing coverage and acceptance behavior
+
 - **Test Scope Requirements**:
-  - **Unit Tests**: Min 80% of business logic; async/concurrency tests required for backend
-  - **Integration Tests**: All API contracts, inter-service communication, database operations
-  - **E2E Tests**: Critical user journeys (P1 stories); min 60% feature coverage for web/mobile
-  - **Performance Tests**: Backend endpoints must meet SLA; mobile must run at ≥55 fps on target devices
-  
-- **Enforcement**: No PR merges without passing test suite + >75% reviewer approval
+  - **Unit Tests**: Minimum 80% of business logic coverage
+  - **Integration Tests**: API contracts, navigation guards, form validation, and state persistence boundaries
+  - **E2E Tests**: Critical P1 mobile journeys including onboarding/authentication and protected-route recovery
+  - **Performance Tests**: Mobile flows MUST meet startup and interaction targets from the active plan
 
-- **Rationale**: TDD ensures correctness before coding, reduces post-release defects, and enables confident refactoring.
+- **Enforcement**: No merge without passing test suite and reviewer confirmation that acceptance scenarios are automated.
 
-### III. User Experience Consistency
+- **Rationale**: TDD reduces regressions in patient-facing flows and gives the team confidence while the app skeleton is still being established.
 
-All user-facing applications (web, mobile) MUST maintain visual, behavioral, and interaction consistency:
+### III. Stitch-Driven Experience Consistency
 
-- **Design System Compliance**:
-  - Single design system source of truth (colors, typography, spacing, components)
-  - All screens MUST use approved design system components
-  - Deviations require design review + architectural justification
-  
-- **Behavioral Consistency**:
-  - Navigation patterns identical across web and mobile (or justified alternative)
-  - Error messages follow consistent format: [Error Code] - [User-friendly message] - [Recovery action]
-  - Loading states, empty states, and success states standardized
-  - Accessibility: WCAG 2.1 AA compliance mandatory (web); VoiceOver/TalkBack support (mobile)
-  
-- **Interaction Standards**:
-  - Web: Keyboard navigation required; mouse + touch support
-  - Mobile: Gesture consistency (swipe, tap, long-press) across platforms
-  - Response time: ≤100ms for interactive feedback
-  
-- **Rationale**: Consistency reduces user learning curve, increases adoption, decreases support burden, and enables code reuse across platforms.
+All patient-facing mobile experiences MUST be driven by the approved Google Stitch design project before implementation begins.
+
+- **Source of Truth**:
+  - The active design reference for mobile auth/profile work is Google Stitch project `Remix of Mobile - Patient Auth & Profile` (`12210324048331832562`)
+  - The following screens are the minimum required experience inventory for this feature set:
+    - `Splash / Onboarding`
+    - `Registration`
+    - `Login`
+    - `Country Code Picker`
+    - `Home`
+    - `Profile`
+    - `Profile (Edit Mode)`
+    - `Session Expired`
+  - Specs, plans, and tasks MUST explicitly trace requirements back to this screen inventory
+
+- **Consistency Requirements**:
+  - No screen, state, or CTA may be implemented if it is missing from the approved Stitch flow unless the design source is updated first
+  - Mobile navigation, labels, recovery states, and edit/view transitions MUST match the Stitch-authored user journey
+  - Shared UI states such as loading, validation, error, and expired-session handling MUST be consistent across all auth and profile screens
+  - Accessibility support is mandatory: VoiceOver/TalkBack semantics, readable labels, and touch targets suitable for mobile form entry
+
+- **Rationale**: Stitch is the team's visual and flow contract. Using it as the source of truth prevents drift between planning, engineering, and design review.
 
 ### IV. Performance Requirements
 
 All applications MUST meet or exceed target SLAs for responsiveness and efficiency:
 
 - **Backend Requirements**:
-  - API Response Times: p95 ≤ 200ms, p99 ≤ 500ms for typical queries
-  - Throughput: ≥1000 concurrent connections; ≥100 RPS per endpoint baseline
-  - Database queries: ≤100ms e2e; index strategy required for new queries
-  - Memory usage: ≤500MB for standalone services; no memory leaks detected (continuous monitoring)
-  - CPU: ≤60% utilization at max load
-  
+  - API Response Times: p95 <= 200ms, p99 <= 500ms for typical queries
+  - Throughput: >=1000 concurrent connections; >=100 RPS per endpoint baseline
+  - Database queries: <=100ms end-to-end; index strategy required for new queries
+
 - **Web Frontend Requirements**:
-  - Core Web Vitals: LCP ≤2.5s, FID ≤100ms, CLS ≤0.1
-  - Bundle size: ≤150KB gzipped (core); lazy-load additional features
-  - Time to Interactive: ≤3s on 4G connection
-  - Rendering: 60 fps for scroll/animations; use RequestAnimationFrame or CSS transforms
-  
+  - Core Web Vitals: LCP <=2.5s, FID <=100ms, CLS <=0.1
+  - Bundle size: <=150KB gzipped for core experience; lazy-load non-critical features
+
 - **Mobile Requirements**:
-  - Frame rate: ≥55 fps for smooth scrolling (iOS/Android)
-  - App startup: ≤2s from cold start
-  - Memory: ≤150MB peak during typical use
-  - Network: Handle reconnection gracefully; offline support if applicable
-  - Battery: No significant drain detected; background tasks ≤5% CPU when idle
-  
+  - Frame rate: >=55 fps for onboarding, auth, home, and profile interactions
+  - App startup: <=2s from cold start on target test devices
+  - Memory: <=150MB peak during typical auth/profile use
+  - Session expiry and navigation recovery MUST complete without app restart
+
 - **Monitoring & Enforcement**:
-  - Automated performance testing in CI/CD pipeline
-  - Real User Monitoring (RUM) dashboard for web/mobile
-  - Alert on SLA breach (immediate investigation required)
-  - Capacity planning: Review SLAs quarterly with 20% headroom minimum
-  
-- **Rationale**: Performance directly impacts user satisfaction, engagement, and conversion. Explicit targets enable predictable scaling and prevent surprise outages.
+  - Automated performance checks in CI/CD where practical
+  - Manual benchmark validation required before first release of the mobile shell
+  - Alert on regressions greater than 10% versus baseline
+
+- **Rationale**: Performance is part of the patient experience, especially in frequent flows like login and profile access.
+
+## Design Source of Truth
+
+For all mobile app setup work, design review MUST use the Stitch project and its named screen inventory as the authoritative UI contract.
+
+- Spec documents MUST describe the user flow implied by the Stitch screens
+- Plan documents MUST map implementation structure to those screens
+- Task documents MUST break work down by the Stitch-backed user stories or screen groups
+- Design changes after planning require the affected spec/plan/tasks artifacts to be updated before implementation continues
 
 ## Platform Scope
 
 This constitution applies to all projects under the AI SDLC Patient Portal initiative:
 
 - **Web Applications**: React/Vue/Next.js frontends, REST/GraphQL APIs
-- **Mobile Applications**: iOS (Swift) and Android (Kotlin) native apps
+- **Mobile Applications**: React Native, iOS, and Android patient experiences
 - **Backend Services**: Python FastAPI, Node.js Express, or equivalent microservices
 - **Testing Infrastructure**: Unit, integration, E2E, load, and security test suites
 
-All principles apply equally across platforms unless platform-specific rationale is documented and approved.
+All principles apply equally across platforms unless a documented exception is approved.
 
 ## Quality Gates & Review Standards
 
 Every feature delivery requires passage through these gates:
 
 ### Phase 1: Design Review (Pre-Implementation)
+
 - [ ] User stories approved by product owner
-- [ ] Spec.md complete with acceptance criteria
-- [ ] Data model documented (if applicable)
-- [ ] API contracts defined (if applicable)
+- [ ] `spec.md` complete with acceptance criteria
+- [ ] Stitch screen inventory mapped to the feature scope
+- [ ] Recovery states documented, including `Session Expired`
 - [ ] Performance requirements estimated
 - [ ] Accessibility checklist completed
 
 ### Phase 2: Code Implementation
-- [ ] All code follows language-specific linting standards
+
+- [ ] All code follows project linting and typing standards
 - [ ] Test-first cycle followed: tests written before implementation
-- [ ] Min coverage thresholds met: 80% business logic, 70% UI
-- [ ] No compiler warnings (web/mobile) or PEP8 violations (Python)
+- [ ] Coverage thresholds met: 80% business logic, 70% UI
+- [ ] Mobile navigation and screen states match approved Stitch flow
 - [ ] Performance benchmarks run; SLA targets met or exceptions documented
 
 ### Phase 3: Pre-Merge Review
-- [ ] Code review by ≥2 engineers (≥1 outside feature team)
+
+- [ ] Code review by >=2 engineers
 - [ ] All automated tests passing (unit + integration + E2E)
-- [ ] UX consistency verified against design system
-- [ ] Performance tests passing; no regression detected
-- [ ] Documentation updated: code comments, API docs, user guides
+- [ ] UX consistency verified against Stitch design source
+- [ ] Performance tests passing with no significant regression
+- [ ] Documentation updated: spec, plan, tasks, and developer notes where needed
 - [ ] Security scanning passed (no critical/high vulnerabilities)
-- [ ] Accessibility audit completed (web: Lighthouse audit; mobile: VoiceOver/TalkBack test)
+- [ ] Accessibility audit completed for changed mobile screens
 
 ### Phase 4: Merge & Deployment
-- [ ] Requires ≥1 approval from maintainer team
-- [ ] Feature flag enabled (if applicable)
-- [ ] Monitoring alerts configured
+
+- [ ] Requires >=1 approval from maintainer team
+- [ ] Monitoring alerts configured where applicable
 - [ ] Rollback plan documented
 
 ## Development Workflow
 
-1. **Branch Naming**: `{issue-number}-{short-description}` (e.g., `001-user-login-screen`)
-2. **Commits**: Atomic, descriptive messages; include test status in commit
-3. **PRs**: Link to feature spec; include performance impact analysis
-4. **Releases**: Semantic versioning (MAJOR.MINOR.PATCH); changelog required
-5. **Escalation**: Ward lead (if SLA at risk); architecture team (if design conflict)
+1. **Branch Naming**: `{issue-number}-{short-description}` (example: `002-mobile-app-setup`)
+2. **Specs First**: No mobile feature work begins without spec coverage for all affected Stitch screens
+3. **Plans Next**: Every plan MUST document the chosen mobile structure, navigation model, and screen-to-module mapping
+4. **Tasks After Planning**: Tasks MUST group work into independently testable user stories or screen clusters
+5. **Releases**: Semantic versioning (MAJOR.MINOR.PATCH); changelog required for user-visible changes
 
 ## Governance
 
 This constitution supersedes all other development guidelines and practices for this project.
 
 **Amendment Process**:
-- Proposed changes MUST include:
-  1. Rationale for change
-  2. Impact analysis on existing features / in-progress work
-  3. Migration plan (if breaking change)
-  4. Implementation effort estimate
-  
-- Approval required from:
-  - Technical Lead
-  - Product Owner
-  - Minimum 2 core team members
-  
-- Amendments logged with:
-  - Old version / new version
-  - Effective date
-  - Principles added/modified/removed
-  - Justification
+- Proposed changes MUST include rationale, impact analysis, and any migration notes
+- Approval required from the Technical Lead, Product Owner, and at least two core team members
+- Amendments MUST log old/new version, effective date, changed principles, and justification
 
-**Compliance Review**: Quarterly check-in to assess adherence to principles; adjustments for 25%+ misalignment.
+**Compliance Review**: Quarterly review of recent specs, plans, and PRs for adherence to quality and design-source rules.
 
-**Non-Negotiable Elements**: Principles II (TDD), III (UX Consistency), and IV (Performance) cannot be downgraded without Executive sponsor approval.
-
-**Runtime Guidance**: Development team refers to `.provide/docs/Developer-Handbook.md` for detailed implementation how-tos and troubleshooting. Constitution defines the "what" and "why"; handbook defines the "how".
+**Non-Negotiable Elements**: Principle II (TDD) and Principle III (Stitch-Driven Experience Consistency) cannot be weakened without formal approval.
 
 ---
 
-**Version**: 1.0.0 | **Ratified**: 2026-04-08 | **Last Amended**: 2026-04-08
+**Version**: 1.1.0 | **Ratified**: 2026-04-08 | **Last Amended**: 2026-04-09
