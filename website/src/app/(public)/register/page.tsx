@@ -14,7 +14,7 @@ export default function RegisterPage() {
 
   return (
     <main className="min-h-screen flex flex-col md:flex-row">
-      {/* Left Brand Panel — hidden on mobile */}
+      {/* ── Left brand panel ─────────────────────────────────── */}
       <div className="hidden md:flex md:w-5/12 lg:w-1/2 relative bg-primary overflow-hidden">
         {/* Background image */}
         <div className="absolute inset-0 z-0">
@@ -36,13 +36,14 @@ export default function RegisterPage() {
               Clinical Curator
             </h1>
             <p className="mt-6 text-xl text-on-primary-container font-medium max-w-md">
-              The precision of medicine, the warmth of wellness. Join a network designed for editorial health excellence.
+              The precision of medicine, the warmth of wellness. Join a network designed for
+              editorial health excellence.
             </p>
           </div>
 
           <div className="space-y-8">
             <div className="flex items-start gap-4">
-              <div className="bg-white/10 p-3 rounded-xl backdrop-blur-md">
+              <div className="bg-surface-container-lowest/10 p-3 rounded-xl backdrop-blur-md">
                 <span className="material-symbols-outlined text-tertiary-fixed-dim">verified_user</span>
               </div>
               <div>
@@ -54,7 +55,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="flex items-start gap-4">
-              <div className="bg-white/10 p-3 rounded-xl backdrop-blur-md">
+              <div className="bg-surface-container-lowest/10 p-3 rounded-xl backdrop-blur-md">
                 <span className="material-symbols-outlined text-tertiary-fixed-dim">medical_services</span>
               </div>
               <div>
@@ -74,7 +75,7 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      {/* Right Form Panel */}
+      {/* ── Right form panel ─────────────────────────────────── */}
       <div className="flex-1 flex flex-col overflow-y-auto bg-surface items-center">
         <div className="w-full max-w-2xl px-6 py-12 md:py-20 lg:px-16">
           {/* Mobile brand header */}
@@ -91,8 +92,8 @@ export default function RegisterPage() {
             <p className="mt-2 text-on-surface-variant">
               Already a member?{' '}
               <a
-                className="text-primary font-bold hover:underline decoration-2 underline-offset-4"
                 href="/login"
+                className="text-primary font-bold hover:underline decoration-2 underline-offset-4"
               >
                 Sign in to Patient Portal
               </a>
@@ -106,10 +107,16 @@ export default function RegisterPage() {
               © 2024 Clinical Curator Health Systems.
             </p>
             <div className="flex gap-4">
-              <a className="text-xs font-medium text-slate-500 hover:text-primary transition-colors" href="#">
+              <a
+                href="#"
+                className="text-xs font-medium text-slate-500 hover:text-primary transition-colors"
+              >
                 Emergency: 911
               </a>
-              <a className="text-xs font-medium text-slate-500 hover:text-primary transition-colors" href="#">
+              <a
+                href="#"
+                className="text-xs font-medium text-slate-500 hover:text-primary transition-colors"
+              >
                 Find a Clinic
               </a>
             </div>
