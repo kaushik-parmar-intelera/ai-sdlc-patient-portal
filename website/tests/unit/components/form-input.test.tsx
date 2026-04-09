@@ -116,7 +116,7 @@ describe('FormInput Component', () => {
       );
 
       const input = container.querySelector('input');
-      expect(input).toHaveClass('border-red-500');
+      expect(input).toHaveClass('border-b-error');
     });
 
     it('should not display error message when error is undefined', () => {

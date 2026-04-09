@@ -2,6 +2,8 @@ import { registrationSchema, validateRegistration } from '@/schemas/registration
 import { RegistrationInput, RegistrationSuccess, RegistrationError, FormState } from '@/types/auth.types';
 import { isRegistrationSuccess, isRegistrationError } from '@/types/auth.types';
 
+test('auth type verification', () => {
+
 // Test 1: RegistrationInput type exports
 const testRegistrationInput: RegistrationInput = {
   firstName: 'John',
@@ -89,3 +91,5 @@ performTypeCompatibilityCheck(testRegistrationInput);
 void testFormState;
 
 console.log('✅ All type verification tests passed');
+
+}); // end test('auth type verification')

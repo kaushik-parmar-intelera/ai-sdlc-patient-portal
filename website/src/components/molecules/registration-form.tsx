@@ -26,7 +26,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitted },
     reset,
     setFocus,
   } = useForm<RegistrationInput>({
@@ -65,10 +65,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
         } else if (isRegistrationError(response)) {
           switch (response.errorCode) {
             case 'EMAIL_EXISTS':
-              setFieldError({
-                field: 'email',
-                message: 'Email is already registered. Please log in or use a different email.',
-              });
+              setFormError(response.error || 'Email is already registered. Please log in or use a different email.');
               break;
             case 'NETWORK_ERROR':
               setFormError('Network error: Please check your internet connection and try again.');
@@ -110,6 +107,13 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
           </svg>
           <p className="text-sm font-medium text-on-error-container">{formError}</p>
+        </div>
+      )}
+
+      {/* Validation error summary — single sr-only alert for screen readers when field errors exist */}
+      {!formError && isSubmitted && Object.keys(errors).length > 0 && (
+        <div role="alert" className="sr-only">
+          Please fix the errors below to continue.
         </div>
       )}
 
@@ -224,7 +228,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
               regarding my medical data processing.
             </label>
             {errors.terms && (
-              <p className="text-xs font-medium text-error mt-1" role="alert">
+              <p className="text-xs font-medium text-error mt-1">
                 {errors.terms.message}
               </p>
             )}
@@ -260,7 +264,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
 
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         {formError && `Error: ${formError}`}
-        {successMessage && `Success: ${successMessage}`}
       </div>
     </form>
   );

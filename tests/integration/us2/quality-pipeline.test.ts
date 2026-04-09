@@ -21,10 +21,10 @@ describe("US2 CI quality gate configuration", () => {
     const workflowPath = path.resolve(process.cwd(), "../.github/workflows/website-quality.yml");
     const workflow = fs.readFileSync(workflowPath, "utf8");
 
-    expect(workflow).toContain("npm run lint");
-    expect(workflow).toContain("npm run typecheck");
-    expect(workflow).toContain("npm run test:coverage");
-    expect(workflow).toContain("npm run build");
-    expect(workflow).toContain("actions/upload-artifact@v4");
+    expect(workflow).toContain("pnpm run lint");
+    expect(workflow).toContain("pnpm run typecheck");
+    expect(workflow).toContain("pnpm run test:coverage");
+    expect(workflow).toContain("pnpm run build");
+    expect(workflow).toContain("actions/upload-artifact@v5");
   });
 });

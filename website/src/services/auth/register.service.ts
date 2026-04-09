@@ -70,6 +70,11 @@ export async function registerUser(
         body: JSON.stringify(input),
       });
 
+      // Treat missing response (e.g. exhausted mock) as a network-level failure
+      if (!response) {
+        throw new TypeError('No response received from server');
+      }
+
       // Parse response body
       let data: RegistrationSuccess | RegistrationError;
       try {

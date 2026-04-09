@@ -124,7 +124,7 @@ describe('Registration Flow Integration', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByText(/invalid|format|valid email/i)).toBeInTheDocument();
+        expect(screen.getByText(/invalid email/i)).toBeInTheDocument();
       });
     });
 

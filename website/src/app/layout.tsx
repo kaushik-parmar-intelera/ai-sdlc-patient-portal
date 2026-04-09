@@ -36,7 +36,9 @@ export default function RootLayout({ children }: PropsWithChildren) {
       </head>
       <body>
         <SkipLink />
-        <Providers>{children}</Providers>
+        <main id="main-content">
+          <Providers>{children}</Providers>
+        </main>
       </body>
     </html>
   );

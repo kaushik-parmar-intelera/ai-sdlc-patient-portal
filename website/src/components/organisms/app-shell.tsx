@@ -17,8 +17,8 @@ export const AppShell = ({ children }: PropsWithChildren) => (
         </nav>
       </div>
     </header>
-    <main id="main-content" className="mx-auto max-w-5xl p-4">
+    <div className="mx-auto max-w-5xl p-4">
       {children}
-    </main>
+    </div>
   </div>
 );
