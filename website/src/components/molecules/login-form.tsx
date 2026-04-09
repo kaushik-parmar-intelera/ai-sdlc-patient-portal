@@ -5,6 +5,8 @@ import React, { useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { useAuthSessionStore } from '@/store/auth-session.store';
+
 const loginSchema = z.object({
   email: z.string().min(1, 'Email is required').email('Invalid email address'),
   password: z.string().min(1, 'Password is required'),
@@ -53,6 +55,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           body: JSON.stringify(data),
         });
         if (response.ok) {
+          const body = await response.json().catch(() => ({}));
+          useAuthSessionStore.getState().setAuthenticated({
+            userId: body.user?.email ?? data.email,
+            name: body.user?.name ?? '',
+            email: body.user?.email ?? data.email,
+          });
           onSuccess?.();
         } else {
           const body = await response.json().catch(() => ({}));

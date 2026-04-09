@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { useAuthSessionStore } from '@/store/auth-session.store';
 
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'Dashboard' },
@@ -13,11 +15,34 @@ const NAV_ITEMS = [
 
 export default function PrivateLayout({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
+  const isAuthenticated = useAuthSessionStore((s) => s.isAuthenticated);
+  const setLoggedOut = useAuthSessionStore((s) => s.setLoggedOut);
+  const user = useAuthSessionStore((s) => s.user);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    };
+    if (userMenuOpen) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [userMenuOpen]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.replace('/login');
+    }
+  }, [isAuthenticated, router]);
 
   const handleSignOut = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
+    setLoggedOut();
+    localStorage.clear();
     router.push('/login');
   };
 
@@ -69,16 +94,49 @@ export default function PrivateLayout({ children }: { children: React.ReactNode 
             >
               Patient Portal
             </Link>
-            <Link
-              href="/profile"
-              className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm flex-shrink-0"
-            >
-              <img
-                alt="User profile"
-                className="w-full h-full object-cover"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3zsKmYoEpYW1ZpAkJ8mzlpdndwGqhJhBrrgOtG8ZMtNuR5ShASDkCgGsfjud0q4zntiFpN0HgkdEzu5fw_ctUfc2T6Z-9Jin60utWRbkPCvqpr1aafZasKVCe5Aauvwyovz_xuLsIVCTsup5_ecKu8Z95B6KQT0_AAJCM3UvU7H9IMaZ9OZfurKKenfrMwYrcEeV_4C-eEmn_Tp5WdHvHXptBQtVm7wjTiE3V48TUMig2664XbwDNYnC2VYVNoM3IxCMOsm8ds5Q"
-              />
-            </Link>
+            {/* Avatar + dropdown */}
+            <div className="relative" ref={userMenuRef}>
+              <button
+                onClick={() => setUserMenuOpen((v) => !v)}
+                className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-primary/40"
+                aria-label="User menu"
+                aria-expanded={userMenuOpen}
+              >
+                <img
+                  alt="User profile"
+                  className="w-full h-full object-cover"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3zsKmYoEpYW1ZpAkJ8mzlpdndwGqhJhBrrgOtG8ZMtNuR5ShASDkCgGsfjud0q4zntiFpN0HgkdEzu5fw_ctUfc2T6Z-9Jin60utWRbkPCvqpr1aafZasKVCe5Aauvwyovz_xuLsIVCTsup5_ecKu8Z95B6KQT0_AAJCM3UvU7H9IMaZ9OZfurKKenfrMwYrcEeV_4C-eEmn_Tp5WdHvHXptBQtVm7wjTiE3V48TUMig2664XbwDNYnC2VYVNoM3IxCMOsm8ds5Q"
+                />
+              </button>
+
+              {userMenuOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden z-50">
+                  {/* User info header */}
+                  <div className="px-4 py-3 border-b border-slate-100">
+                    <p className="text-sm font-bold text-slate-900 truncate">{user?.name || 'Patient'}</p>
+                    <p className="text-xs text-slate-500 truncate">{user?.email || ''}</p>
+                  </div>
+                  {/* Menu items */}
+                  <div className="py-1">
+                    <Link
+                      href="/profile"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[18px] text-slate-400">person</span>
+                      My Profile
+                    </Link>
+                    <button
+                      onClick={() => { setUserMenuOpen(false); handleSignOut(); }}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">logout</span>
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
             {/* Mobile hamburger */}
             <button
               className="md:hidden p-2 rounded-lg hover:bg-surface-container transition-colors"

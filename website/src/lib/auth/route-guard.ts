@@ -12,9 +12,12 @@ export const isAuthorizedForPath = ({ pathname, isAuthenticated }: RouteGuardCon
   return isAuthenticated;
 };
 
-export const getAuthRedirectPath = (pathname: string): string => {
-  if (pathname.startsWith("/private")) {
-    return "/public";
+export const getAuthRedirectPath = (pathname: string, isAuthenticated: boolean): string => {
+  if (isPrivatePath(pathname) && !isAuthenticated) {
+    return "/login";
   }
-  return "/";
+  if ((pathname === "/login" || pathname === "/register") && isAuthenticated) {
+    return "/dashboard";
+  }
+  return pathname;
 };
