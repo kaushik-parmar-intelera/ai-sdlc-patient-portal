@@ -1,23 +1,31 @@
-# Implementation Plan: Website Project Setup (Next.js Frontend)
+# Implementation Plan: [FEATURE]
 
-**Branch**: `001-website-project-setup` | **Date**: 2026-04-08 | **Spec**: `/specs/001-website-project-setup/spec.md`
-**Input**: Feature specification from `/specs/001-website-project-setup/spec.md` and Jira subtask `SCRUM-9` (Web Project Setup (Next.js) - Frontend Only)
+**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
+**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
+
+**Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/plan-template.md` for the execution workflow.
 
 ## Summary
 
-Set up a website-focused Patient Portal foundation using the stack mandated in `SCRUM-9`: Next.js 14+ with React 18+ and TypeScript 5.x, Zustand for client state, React Query for server-state caching, Tailwind CSS for responsive theming, and a scalable architecture with public/private routing, API service layer, lint/format automation, and screen-level mock data organization. Use a top-level workspace layout with `website/`, `mobile/`, `backend/`, and `tests/` directories, where website implementation starts now and other product areas are initialized as empty placeholders.
+[Extract from feature spec: primary requirement + technical approach from research]
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.x with Next.js 14+ compatibility  
-**Primary Dependencies**: Next.js 14+, React 18+, Zustand, React Query, Tailwind CSS, ESLint, Prettier, Storybook  
-**Storage**: Backend API as source of truth (website app caches via React Query); screen-level mock JSON data for development parity  
-**Testing**: Jest + React Testing Library (unit/integration), Playwright (E2E), Storybook-based component verification  
-**Target Platform**: Web browsers (desktop, tablet, mobile) with responsive PWA support  
-**Project Type**: Top-level multi-directory project (`website` active, `mobile`/`backend` placeholders) with Next.js website app and controller-pattern UI/business separation  
-**Performance Goals**: <2s page load, Lighthouse mobile >=90, support 1000 concurrent users, <=100ms interactive feedback on primary controls  
-**Constraints**: Core JS bundle <200KB gzipped, feature CSS <100KB, WCAG 2.1 AA, zero-trust security posture, error boundaries + network interceptors, auto-format on save and pre-commit  
-**Scale/Scope**: Setup baseline for ~50 screens, 7 user stories, and 10,000+ service catalog entries
+<!--
+  ACTION REQUIRED: Replace the content in this section with the technical details
+  for the project. The structure here is presented in advisory capacity to guide
+  the iteration process.
+-->
+
+**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
+**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
+**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
+**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]  
+**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
+**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
+**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## Constitution Check
 
@@ -25,97 +33,93 @@ Set up a website-focused Patient Portal foundation using the stack mandated in `
 
 Based on `.specify/memory/constitution.md`, verify:
 
-- [x] **Code Quality (Principle I)**: Project type and language/version identified -> YES
-  - Linting tool identified: ESLint (+ Prettier formatting policy)
-  - Code coverage target: 80% business logic, 70% UI
+- [ ] **Code Quality (Principle I)**: Project type and language/version identified → [YES/CLARIFY]
+  - Linting tool identified: [e.g., ESLint, Pylint, SwiftLint]
+  - Code coverage target: [e.g., 80% business logic, 70% UI]
+  
+- [ ] **Test-Driven (Principle II)**: Testing framework pre-selected → [YES/CLARIFY]
+  - Testing tool identified: [e.g., pytest, Jest, XCTest]
+  - Unit test strategy defined: [scope of TDD coverage]
+  - Integration test scope identified: [APIs, inter-service comms, data models]
 
-- [x] **Test-Driven (Principle II)**: Testing framework pre-selected -> YES
-  - Testing tool identified: Jest + React Testing Library + Playwright
-  - Unit test strategy defined: test-first for stores, hooks, controllers, and component behavior
-  - Integration test scope identified: route guards, API service layer, React Query integration, mock-to-service flow
+- [ ] **UX Consistency (Principle III)**: [If web/mobile feature]
+  - Design system applied: [YES/NO/IN_PROGRESS]
+  - Platform consistency documented: [e.g., "Web + iOS follow Material Design 3"]
+  - Accessibility requirements clear: [WCAG 2.1 AA for web, VoiceOver/TalkBack for mobile]
 
-- [x] **UX Consistency (Principle III)**: Web feature requirements defined
-  - Design system applied: YES (Figma-first, reusable atomic components)
-  - Platform consistency documented: responsive behavior aligned across desktop/tablet/mobile
-  - Accessibility requirements clear: WCAG 2.1 AA baseline for all starter pages
+- [ ] **Performance (Principle IV)**: SLA targets documented
+  - Response time targets: [e.g., p95 ≤200ms for backend, LCP ≤2.5s for web]
+  - Throughput/resources: [e.g., ≥100 RPS, ≤150MB memory]
+  - Performance testing tool: [e.g., k6, JMeter, Lighthouse]
 
-- [x] **Performance (Principle IV)**: SLA targets documented
-  - Response time targets: page load <2s, interactive feedback <=100ms, Lighthouse mobile >=90
-  - Throughput/resources: support 1000 concurrent users; bundle and CSS budget constraints documented
-  - Performance testing tool: Lighthouse + Playwright flows with CI threshold checks
-
-**Gate Status**: [x] PASS (all gates checked) | [ ] NEEDS CLARIFICATION (see flags above) | [ ] DEFER (with justification)
+**Gate Status**: ☐ PASS (all gates checked) | ☐ NEEDS CLARIFICATION (see flags above) | ☐ DEFER (with justification)
 
 ## Project Structure
 
 ### Documentation (this feature)
 
 ```text
-specs/001-website-project-setup/
-├── plan.md
-├── research.md
-├── data-model.md
-├── quickstart.md
-├── contracts/
-│   ├── api-service-contract.md
-│   └── routing-and-mock-contract.md
-└── tasks.md
+specs/[###-feature]/
+├── plan.md              # This file (/speckit.plan command output)
+├── research.md          # Phase 0 output (/speckit.plan command)
+├── data-model.md        # Phase 1 output (/speckit.plan command)
+├── quickstart.md        # Phase 1 output (/speckit.plan command)
+├── contracts/           # Phase 1 output (/speckit.plan command)
+└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
 ```
 
 ### Source Code (repository root)
+<!--
+  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
+  for this feature. Delete unused options and expand the chosen structure with
+  real paths (e.g., apps/admin, packages/something). The delivered plan must
+  not include Option labels.
+-->
 
 ```text
-website/
-├── src/
-│   ├── app/
-│   │   ├── (public)/
-│   │   ├── (private)/
-│   │   ├── layout.tsx
-│   │   ├── page.tsx
-│   │   └── error.tsx
-│   ├── components/
-│   │   ├── atoms/
-│   │   ├── molecules/
-│   │   └── organisms/
-│   ├── controllers/
-│   ├── hooks/
-│   ├── lib/
-│   ├── routes/
-│   ├── services/
-│   │   ├── api/
-│   │   └── query/
-│   ├── store/
-│   ├── mocks/
-│   │   └── screens/
-│   ├── styles/
-│   └── types/
-├── public/
-├── .storybook/
-└── package.json
-
-mobile/
-└── .gitkeep
-
-backend/
-└── .gitkeep
+# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
+src/
+├── models/
+├── services/
+├── cli/
+└── lib/
 
 tests/
-├── unit/
+├── contract/
 ├── integration/
-└── e2e/
+└── unit/
+
+# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
+backend/
+├── src/
+│   ├── models/
+│   ├── services/
+│   └── api/
+└── tests/
+
+frontend/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   └── services/
+└── tests/
+
+# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
+api/
+└── [same as backend above]
+
+ios/ or android/
+└── [platform-specific structure: feature modules, UI flows, platform tests]
 ```
 
-**Structure Decision**: Adopt a top-level workspace split with `website/`, `mobile/`, `backend/`, and `tests/`. Implement `SCRUM-9` inside `website/` now; keep `mobile/` and `backend/` as empty placeholders to align future implementation tracks without changing project layout later.
+**Structure Decision**: [Document the selected structure and reference the real
+directories captured above]
 
 ## Complexity Tracking
 
-No constitution violations require justification at planning time.
+> **Fill ONLY if Constitution Check has violations that must be justified**
 
-## Post-Design Constitution Re-check
-
-- [x] Principle I maintained: linting/formatting, coverage, and architecture constraints captured in research + quickstart.
-- [x] Principle II maintained: test-first strategy and framework mapping documented.
-- [x] Principle III maintained: accessibility + responsive + design-system alignment reflected in contracts and data model.
-- [x] Principle IV maintained: explicit performance budgets and verification path included.
-
-**Post-Design Gate Status**: PASS
+| Violation | Why Needed | Simpler Alternative Rejected Because |
+|-----------|------------|-------------------------------------|
+| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
