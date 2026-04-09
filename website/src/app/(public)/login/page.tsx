@@ -89,7 +89,25 @@ function LoginPageContent() {
 
             <LoginForm defaultEmail={prefillEmail} onSuccess={handleLoginSuccess} />
 
-            <p className="mt-10 text-center text-sm text-slate-500 font-medium">
+            {/* Demo credentials hint */}
+            <div className="mt-6 p-4 rounded-xl bg-slate-50 border border-slate-200">
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-sm text-slate-400">info</span>
+                Demo Credentials
+              </p>
+              <div className="flex flex-col gap-1">
+                <p className="text-xs text-slate-700">
+                  <span className="font-bold text-slate-500">Email:</span>{' '}
+                  <span className="font-mono font-semibold text-primary">testuser@healthcare.com</span>
+                </p>
+                <p className="text-xs text-slate-700">
+                  <span className="font-bold text-slate-500">Password:</span>{' '}
+                  <span className="font-mono font-semibold text-primary">Test@123</span>
+                </p>
+              </div>
+            </div>
+
+            <p className="mt-6 text-center text-sm text-slate-500 font-medium">
               New to Clinical Curator?{' '}
               <a
                 href="/register"
