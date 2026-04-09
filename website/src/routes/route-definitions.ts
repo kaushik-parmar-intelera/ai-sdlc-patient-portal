@@ -27,6 +27,14 @@ export const routeDefinitions: RouteDefinition[] = [
     requiredPermissions: [],
   },
   {
+    id: "register",
+    path: "/register",
+    group: "public",
+    layout: "public",
+    preloadPolicy: "lazy",
+    requiredPermissions: [],
+  },
+  {
     id: "private-home",
     path: "/private",
     group: "private",
