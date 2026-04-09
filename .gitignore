@@ -43,3 +43,4 @@ storybook-static/
 
 # Misc
 .cache/
+/AI-SDLC-Patient-Backend/.vs

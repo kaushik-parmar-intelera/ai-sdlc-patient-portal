@@ -1,0 +1,59 @@
+# Environment configuration files (keep .env.development and .env.production as templates)
+.env
+.env.local
+.env.*.local
+
+# Docker-related
+.docker/
+docker-compose.override.yml
+
+# Build outputs
+bin/
+obj/
+*.dll
+*.pdb
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+*.sln.docstates
+*.userprefs
+.DS_Store
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Node (if used for frontend)
+node_modules/
+dist/
+
+# Package manager
+packages/
+
+# Test results
+TestResults/
+.coverage/
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# OS specific
+Thumbs.db
+.DS_Store
+
+# Private keys and certificates
+*.key
+*.pem
+*.pfx
+*.p12
+
+# SQL Server backups
+*.bak
+*.trn
