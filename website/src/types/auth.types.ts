@@ -86,3 +86,31 @@ export function isRegistrationError(
 ): response is RegistrationError {
   return 'errorCode' in response;
 }
+
+// ── Login types ──────────────────────────────────────────────────────────────
+
+export interface LoginUser {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+  isActive: boolean;
+}
+
+export interface LoginSuccess {
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+  user: LoginUser;
+}
+
+export type LoginError = RegistrationError;
+
+export function isLoginSuccess(r: LoginSuccess | LoginError): r is LoginSuccess {
+  return 'accessToken' in r && !('errorCode' in r);
+}
+
+export function isLoginError(r: LoginSuccess | LoginError): r is LoginError {
+  return 'errorCode' in r;
+}
