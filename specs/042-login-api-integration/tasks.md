@@ -22,9 +22,9 @@
 
 **Purpose**: Type definitions, schema extraction, and test fixtures that ALL subsequent tasks depend on. MUST complete in order before Phase 3.
 
-- [ ] T004 Add `LoginUser`, `LoginSuccess`, `LoginError`, `isLoginSuccess`, `isLoginError` to `website/src/types/auth.types.ts` — per data-model.md section 3–4
-- [ ] T005 [P] Create `website/src/schemas/login.schema.ts` — extract `loginSchema` (email required, password required) and `LoginInput` type from `login-form.tsx`; update `login-form.tsx` to import from the new schema file
-- [ ] T006 [P] Create `website/src/mocks/auth/login.mock.ts` — define `validLoginInput`, `mockLoginResponses.success`, `mockLoginResponses.invalidCredentials`, `mockLoginResponses.serverError`, `mockLoginResponses.networkError` per data-model.md and contracts/login-api.md
+- [X] T004 Add `LoginUser`, `LoginSuccess`, `LoginError`, `isLoginSuccess`, `isLoginError` to `website/src/types/auth.types.ts` — per data-model.md section 3–4
+- [X] T005 [P] Create `website/src/schemas/login.schema.ts` — extract `loginSchema` (email required, password required) and `LoginInput` type from `login-form.tsx`; update `login-form.tsx` to import from the new schema file
+- [X] T006 [P] Create `website/src/mocks/auth/login.mock.ts` — define `validLoginInput`, `mockLoginResponses.success`, `mockLoginResponses.invalidCredentials`, `mockLoginResponses.serverError`, `mockLoginResponses.networkError` per data-model.md and contracts/login-api.md
 
 **Checkpoint**: Types, schema, and fixtures ready; TDD test writing can begin ✓
 
@@ -38,12 +38,12 @@
 
 ### TDD: Write Tests First (Red Phase)
 
-- [ ] T007 [US1] Write unit tests for `website/tests/unit/services/auth/login.service.test.ts` covering:
+- [X] T007 [US1] Write unit tests for `website/tests/unit/services/auth/login.service.test.ts` covering:
   - T-L01: success path — `loginUser()` returns `LoginSuccess` with accessToken and user data
   - T-L02: `INVALID_CREDENTIALS` error — returns `LoginError { errorCode: 'INVALID_CREDENTIALS' }`
   - T-L03: network failure — returns `LoginError { errorCode: 'NETWORK_ERROR' }`
   - Uses `axios-mock-adapter` (already installed) to mock `axiosClient`; mocks envelope wrapping
-- [ ] T008 [P] [US1] Write component tests for `website/tests/unit/components/molecules/login-form.test.tsx` covering:
+- [X] T008 [P] [US1] Write component tests for `website/tests/unit/components/molecules/login-form.test.tsx` covering:
   - T-L04: renders email input (`label: /institutional email/i`), password input (`label: /security key/i`), submit button
   - T-L05: `toast.success` called with "Signed in successfully!" when `loginUser` returns `LoginSuccess`
   - T-L06: `toast.error` called with credentials message when `loginUser` returns `INVALID_CREDENTIALS`
@@ -54,7 +54,7 @@
 
 ### Implementation (Green Phase)
 
-- [ ] T009 [US1] Implement `website/src/services/auth/login.service.ts`:
+- [X] T009 [US1] Implement `website/src/services/auth/login.service.ts`:
   - Import `axiosClient` from `@/services/api/axios-client`
   - Import `LoginInput`, `LoginSuccess`, `LoginError` from `@/types/auth.types`
   - `loginUser(input: LoginInput): Promise<LoginSuccess | LoginError>` — single try/catch, no retry
@@ -62,13 +62,13 @@
   - On resolved: cast and return as `LoginSuccess` (interceptor already unwrapped envelope)
   - On caught `LoginError` (has `errorCode`): return it
   - On unexpected error: return `{ errorCode: 'NETWORK_ERROR', error: 'An unexpected error occurred. Please try again.' }`
-- [ ] T010 [US1] Update `website/src/app/api/auth/login/route.ts` — replace mock `TEST_USERS` implementation with real backend proxy:
+- [X] T010 [US1] Update `website/src/app/api/auth/login/route.ts` — replace mock `TEST_USERS` implementation with real backend proxy:
   - Read `process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080'`
   - Forward `{ email, password }` to `POST ${apiBaseUrl}/api/v1/auth/login`
   - On backend 200: parse `data.user`, set `auth_session` httpOnly cookie (base64-encode `{ email, name: firstName+lastName, accessToken, expiresIn }`), return full response JSON with 200
   - On backend 4xx/5xx: forward response JSON with same status
   - On fetch network failure: return 503 with NETWORK_ERROR envelope
-- [ ] T011 [US1] Update `website/src/components/molecules/login-form.tsx` — migrate from `fetch` to `loginUser` service:
+- [X] T011 [US1] Update `website/src/components/molecules/login-form.tsx` — migrate from `fetch` to `loginUser` service:
   - Add imports: `loginUser` from `@/services/auth/login.service`, `toast` from `sonner`, `isLoginSuccess` / `isLoginError` from `@/types/auth.types`
   - Replace schema inline definition with import from `@/schemas/login.schema`
   - Remove `formError` state, `setFormError`, and the error banner JSX
@@ -82,9 +82,9 @@
 
 **Purpose**: Cross-cutting quality gates and regression check
 
-- [ ] T012 [P] Run `pnpm tsc --noEmit` in `website/` — confirm zero TypeScript errors across all new and modified files (`auth.types.ts`, `login.schema.ts`, `login.service.ts`, `login-form.tsx`, `login/route.ts`, `login.mock.ts`)
-- [ ] T013 [P] Run `pnpm lint` in `website/` — confirm zero ESLint errors; fix any import-order or unused-import warnings in new files
-- [ ] T014 Run full test suite `pnpm test` — confirm all new tests pass (T-L01 through T-L09) and no regressions in registration or auth tests
+- [X] T012 [P] Run `pnpm tsc --noEmit` in `website/` — confirm zero TypeScript errors across all new and modified files (`auth.types.ts`, `login.schema.ts`, `login.service.ts`, `login-form.tsx`, `login/route.ts`, `login.mock.ts`)
+- [X] T013 [P] Run `pnpm lint` in `website/` — confirm zero ESLint errors; fix any import-order or unused-import warnings in new files (pre-existing jest.environment.cjs errors unrelated to SCRUM-42)
+- [X] T014 Run full test suite `pnpm test` — confirm all new tests pass (T-L01 through T-L09) and no regressions in registration or auth tests
 - [ ] T015 Manual smoke test: start dev server (`pnpm dev`) + backend; submit valid credentials → success toast + redirect to `/dashboard`; submit wrong password → `INVALID_CREDENTIALS` toast; stop backend → `NETWORK_ERROR` toast
 - [ ] T016 [P] Verify `auth_session` httpOnly cookie is set correctly after login: DevTools → Application → Cookies → `auth_session` (httpOnly ✓, SameSite: Lax ✓, expires ~1 hour)
 - [ ] T017 [P] Verify Zustand store is populated: after login, check `localStorage['cc_auth_session']` contains `{ isAuthenticated: true, user: { userId, name, email } }` — confirm `userId` is the UUID (not email address — bug fix from old implementation)
