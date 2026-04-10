@@ -1,8 +1,13 @@
 import axios from "axios";
+import { Platform } from "react-native";
 
-// Docker backend – ASP.NET Core on port 8080.
-// For emulator/simulator use localhost; for physical device use your machine's LAN IP.
-const BASE_URL = "http://localhost:8080/api/v1";
+// Android emulator routes "localhost" to itself, not the host machine.
+// 10.0.2.2 is the special alias that points back to the host from the Android emulator.
+// For physical devices, replace with your machine's LAN IP.
+const BASE_URL =
+  Platform.OS === "android"
+    ? "http://10.0.2.2:8080/api/v1"
+    : "http://localhost:8080/api/v1";
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -26,11 +31,16 @@ apiClient.interceptors.request.use((config) => {
 });
 
 // Normalise errors — unwrap the ApiResponse envelope first.
+// When the backend returns validation details, surface the first field reason
+// so the user sees something actionable instead of the generic envelope message.
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    const apiError = error?.response?.data?.error;
+    const details: { field: string; reason: string }[] | undefined = apiError?.details;
     const message: string =
-      error?.response?.data?.error?.message ??
+      (details && details.length > 0 ? details[0].reason : null) ??
+      apiError?.message ??
       error?.response?.data?.message ??
       error?.response?.data?.title ??
       error?.message ??

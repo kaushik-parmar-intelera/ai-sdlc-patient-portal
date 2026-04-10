@@ -91,12 +91,14 @@ export default function LoginScreen() {
               name="password"
               render={({ field: { onBlur, onChange, value } }) => (
                 <TextField
+                  autoComplete="current-password"
                   error={errors.password?.message}
                   label="Password"
                   onBlur={onBlur}
                   onChangeText={onChange}
                   placeholder="••••••••"
                   secureTextEntry
+                  textContentType="password"
                   value={value}
                 />
               )}

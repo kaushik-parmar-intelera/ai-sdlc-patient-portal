@@ -23,6 +23,22 @@ export default function RegisterScreen() {
       setError("Please fill in all required fields.");
       return;
     }
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+    if (!/[A-Z]/.test(password)) {
+      setError("Password must contain at least one uppercase letter.");
+      return;
+    }
+    if (!/[!@#$%^&*]/.test(password)) {
+      setError("Password must contain at least one special character (!@#$%^&*).");
+      return;
+    }
+    if (!/\d/.test(password)) {
+      setError("Password must contain at least one number.");
+      return;
+    }
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
       return;
@@ -105,10 +121,12 @@ export default function RegisterScreen() {
           />
 
           <TextField
+            autoComplete="new-password"
             label="Password"
             onChangeText={setPassword}
             placeholder="••••••••"
             secureTextEntry
+            textContentType="oneTimeCode"
             value={password}
           />
 
@@ -121,10 +139,12 @@ export default function RegisterScreen() {
           </View>
 
           <TextField
+            autoComplete="new-password"
             label="Confirm Password"
             onChangeText={setConfirmPassword}
             placeholder="••••••••"
             secureTextEntry
+            textContentType="oneTimeCode"
             value={confirmPassword}
           />
 
