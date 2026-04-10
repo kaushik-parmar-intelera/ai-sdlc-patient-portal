@@ -3,16 +3,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { toast } from 'sonner';
 
+import { loginSchema, LoginInput } from '@/schemas/login.schema';
+import { loginUser } from '@/services/auth/login.service';
 import { useAuthSessionStore } from '@/store/auth-session.store';
-
-const loginSchema = z.object({
-  email: z.string().min(1, 'Email is required').email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
-});
-
-export type LoginInput = z.infer<typeof loginSchema>;
+import { isLoginSuccess, isLoginError } from '@/types/auth.types';
 
 export interface LoginFormProps {
   defaultEmail?: string;
@@ -25,7 +21,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   onSuccess,
   className = '',
 }) => {
-  const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -46,32 +41,33 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
   const onSubmit = useCallback(
     async (data: LoginInput) => {
-      setFormError(null);
       setIsSubmitting(true);
       try {
-        const response = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-        });
-        if (response.ok) {
-          const body = await response.json().catch(() => ({}));
+        const response = await loginUser(data);
+
+        if (isLoginSuccess(response)) {
           useAuthSessionStore.getState().setAuthenticated({
-            userId: body.user?.email ?? data.email,
-            name: body.user?.name ?? '',
-            email: body.user?.email ?? data.email,
+            userId: response.user.id,
+            name: `${response.user.firstName} ${response.user.lastName}`.trim(),
+            email: response.user.email,
           });
+          toast.success('Signed in successfully!');
           onSuccess?.();
-        } else {
-          const body = await response.json().catch(() => ({}));
-          if (response.status === 401) {
-            setFormError('Incorrect email or password. Please try again.');
-          } else {
-            setFormError(body.error || 'Unable to sign in. Please try again later.');
+        } else if (isLoginError(response)) {
+          switch (response.errorCode) {
+            case 'INVALID_CREDENTIALS':
+              toast.error('Incorrect email or password. Please try again.');
+              break;
+            case 'NETWORK_ERROR':
+              toast.error('Network error: Please check your internet connection and try again.');
+              break;
+            case 'SERVER_ERROR':
+              toast.error('Unable to sign in. Please try again later.');
+              break;
+            default:
+              toast.error(response.error || 'Sign in failed. Please try again.');
           }
         }
-      } catch {
-        setFormError('Network error. Please check your connection and try again.');
       } finally {
         setIsSubmitting(false);
       }
@@ -86,20 +82,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       aria-busy={isSubmitting}
       noValidate
     >
-      {/* Error banner */}
-      {formError && (
-        <div role="alert" className="flex items-start gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200">
-          <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-            />
-          </svg>
-          <p className="text-sm font-medium text-red-800">{formError}</p>
-        </div>
-      )}
-
       {/* Institutional Email */}
       <div className="space-y-2">
         <label
