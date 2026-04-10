@@ -52,57 +52,57 @@
 
 > Tests MUST be created and confirmed **failing** before any implementation task (T014–T021) begins. Follow Red-Green-Refactor.
 
-- [ ] T006 [P] [US1] Create `website/tests/services/user/user-detail.service.test.ts` — T-UD01: mock `axiosClient.get` to resolve with `UserDetailSuccess`; assert service returns the user object
-- [ ] T007 [P] [US1] Add T-UD02 to `website/tests/services/user/user-detail.service.test.ts` — mock axios to reject with `{ errorCode: 'INVALID_TOKEN', error: '...' }`; assert service returns `UserDetailError` with `errorCode: 'INVALID_TOKEN'`
-- [ ] T008 [P] [US1] Add T-UD03 to `website/tests/services/user/user-detail.service.test.ts` — mock axios to reject with `{ errorCode: 'USER_NOT_FOUND', error: '...' }`; assert service returns `UserDetailError` with `errorCode: 'USER_NOT_FOUND'`
-- [ ] T009 [P] [US1] Add T-UD04 to `website/tests/services/user/user-detail.service.test.ts` — mock axios to throw a network error; assert service returns `UserDetailError` with `errorCode: 'NETWORK_ERROR'`
-- [ ] T010 [P] [US1] Create `website/tests/hooks/user/use-user-detail.test.ts` — T-UD05: mock `getUserDetail` to resolve successfully; assert `toast.success` is called with "Profile loaded successfully."
-- [ ] T011 [P] [US1] Add T-UD06 to `website/tests/hooks/user/use-user-detail.test.ts` — mock `getUserDetail` to return `UserDetailError { errorCode: 'INVALID_TOKEN' }`; assert `toast.error` called with "Session expired..." and `router.push('/login')` called
-- [ ] T012 [P] [US1] Add T-UD07 to `website/tests/hooks/user/use-user-detail.test.ts` — mock `getUserDetail` to return `UserDetailError { errorCode: 'NETWORK_ERROR' }`; assert `toast.error` called with "Unable to load profile..."
-- [ ] T013 [P] [US1] Create `website/tests/app/(private)/dashboard/page.test.tsx` — T-UD08: mock `useUserDetail` returning `{ userDetail: { firstName: 'Kaushik', ... }, isLoading: false }`; assert welcome heading contains "Kaushik". T-UD09: mock `isLoading: true`; assert skeleton element is rendered instead of the name
-- [ ] T013b [P] [US1] Create `website/tests/app/(private)/profile/page.test.tsx` — T-UD10: mock `useUserDetail` returning `{ userDetail: { email: 'kaushik@healthcare.com', ... }, isLoading: false }`; assert email field displays the mocked email
+- [x] T006 [P] [US1] Create `website/tests/services/user/user-detail.service.test.ts` — T-UD01: mock `axiosClient.get` to resolve with `UserDetailSuccess`; assert service returns the user object
+- [x] T007 [P] [US1] Add T-UD02 to `website/tests/services/user/user-detail.service.test.ts` — mock axios to reject with `{ errorCode: 'INVALID_TOKEN', error: '...' }`; assert service returns `UserDetailError` with `errorCode: 'INVALID_TOKEN'`
+- [x] T008 [P] [US1] Add T-UD03 to `website/tests/services/user/user-detail.service.test.ts` — mock axios to reject with `{ errorCode: 'USER_NOT_FOUND', error: '...' }`; assert service returns `UserDetailError` with `errorCode: 'USER_NOT_FOUND'`
+- [x] T009 [P] [US1] Add T-UD04 to `website/tests/services/user/user-detail.service.test.ts` — mock axios to throw a network error; assert service returns `UserDetailError` with `errorCode: 'NETWORK_ERROR'`
+- [x] T010 [P] [US1] Create `website/tests/hooks/user/use-user-detail.test.ts` — T-UD05: mock `getUserDetail` to resolve successfully; assert `toast.success` is called with "Profile loaded successfully."
+- [x] T011 [P] [US1] Add T-UD06 to `website/tests/hooks/user/use-user-detail.test.ts` — mock `getUserDetail` to return `UserDetailError { errorCode: 'INVALID_TOKEN' }`; assert `toast.error` called with "Session expired..." and `router.push('/login')` called
+- [x] T012 [P] [US1] Add T-UD07 to `website/tests/hooks/user/use-user-detail.test.ts` — mock `getUserDetail` to return `UserDetailError { errorCode: 'NETWORK_ERROR' }`; assert `toast.error` called with "Unable to load profile..."
+- [x] T013 [P] [US1] Create `website/tests/app/(private)/dashboard/page.test.tsx` — T-UD08: mock `useUserDetail` returning `{ userDetail: { firstName: 'Kaushik', ... }, isLoading: false }`; assert welcome heading contains "Kaushik". T-UD09: mock `isLoading: true`; assert skeleton element is rendered instead of the name
+- [x] T013b [P] [US1] Create `website/tests/app/(private)/profile/page.test.tsx` — T-UD10: mock `useUserDetail` returning `{ userDetail: { email: 'kaushik@healthcare.com', ... }, isLoading: false }`; assert email field displays the mocked email
 
 **Confirm all tests above are RED** before proceeding to implementation.
 
 ### Implementation for User Story 1
 
-- [ ] T014 [US1] Create `website/src/app/api/user/me/route.ts` — `export async function GET(request: NextRequest)`:
+- [x] T014 [US1] Create `website/src/app/api/user/me/route.ts` — `export async function GET(request: NextRequest)`:
   - Read `request.cookies.get('auth_session')`; return 401 `INVALID_TOKEN` envelope if absent
   - Wrap `Buffer.from(cookie.value, 'base64').toString('utf-8')` + `JSON.parse` in try/catch; return 401 on failure
   - `fetch(\`${API_BASE_URL}/api/v1/users/me\`, { headers: { Authorization: \`Bearer ${payload.accessToken}\` } })`
   - Return backend JSON + status as-is on success/error; return 503 `NETWORK_ERROR` on catch
 
-- [ ] T015 [P] [US1] Create `website/src/services/user/user-detail.service.ts` — `export async function getUserDetail(): Promise<UserDetailSuccess | UserDetailError>`:
+- [x] T015 [P] [US1] Create `website/src/services/user/user-detail.service.ts` — `export async function getUserDetail(): Promise<UserDetailSuccess | UserDetailError>`:
   - `const response = await axiosClient.get<UserDetailSuccess>('/api/user/me')` inside try/catch
   - On success: `return response.data`
   - On catch: return `{ errorCode: err?.errorCode ?? 'NETWORK_ERROR', error: err?.error ?? 'Unknown error' }`
 
-- [ ] T016 [US1] Create `website/src/hooks/user/use-user-detail.ts` — `export function useUserDetail()`:
+- [x] T016 [US1] Create `website/src/hooks/user/use-user-detail.ts` — `export function useUserDetail()`:
   - `const query = useQuery({ queryKey: ['user', 'detail'], queryFn: getUserDetail, staleTime: 300_000 })`
   - Declare `const toastFiredRef = useRef(false)` for one-shot success guard
   - On `query.data` that passes `isUserDetailSuccess`: if `!toastFiredRef.current` → set `true` → `toast.success('Profile loaded successfully.')`
   - On `query.data` that passes `isUserDetailError`: map `errorCode` → `toast.error(message)` + `router.push('/login')` for `INVALID_TOKEN`
   - Return `{ userDetail: UserDetailSuccess | undefined, isLoading: query.isLoading, isError: boolean }`
 
-- [ ] T017 [US1] Verify service tests T-UD01–T-UD04 are now GREEN in `website/tests/services/user/user-detail.service.test.ts`; fix implementation if any fail
+- [x] T017 [US1] Verify service tests T-UD01–T-UD04 are now GREEN in `website/tests/services/user/user-detail.service.test.ts`; fix implementation if any fail
 
-- [ ] T018 [US1] Verify hook tests T-UD05–T-UD07 are now GREEN in `website/tests/hooks/user/use-user-detail.test.ts`; fix implementation if any fail
+- [x] T018 [US1] Verify hook tests T-UD05–T-UD07 are now GREEN in `website/tests/hooks/user/use-user-detail.test.ts`; fix implementation if any fail
 
-- [ ] T019 [US1] Update `website/src/app/(private)/dashboard/page.tsx`:
+- [x] T019 [US1] Update `website/src/app/(private)/dashboard/page.tsx`:
   - Add `'use client'` directive if absent
   - Import `useUserDetail` from `@/hooks/user/use-user-detail`
   - Replace hardcoded `"Welcome back, Sarah."` with `"Welcome back, ${userDetail?.firstName ?? '...'}."`
   - Replace hardcoded `"Sarah Jenkins"` in the profile card name with `\`${userDetail?.firstName ?? ''} ${userDetail?.lastName ?? ''}\`.trim()`
   - Wrap name fields in `isLoading` skeleton: `<div className="animate-pulse bg-slate-200 rounded h-5 w-32" aria-busy="true" />` while loading
 
-- [ ] T020 [P] [US1] Update `website/src/app/(private)/profile/page.tsx`:
+- [x] T020 [P] [US1] Update `website/src/app/(private)/profile/page.tsx`:
   - Add `'use client'` directive if absent
   - Import `useUserDetail` from `@/hooks/user/use-user-detail`
   - Replace hardcoded `"Sarah Jenkins"` in the profile header name with `\`${userDetail?.firstName ?? ''} ${userDetail?.lastName ?? ''}\`.trim()`
   - Replace hardcoded `"s.jenkins@example.com"` with `userDetail?.email ?? '...'`
   - Wrap name/email with `animate-pulse` skeleton while `isLoading`
 
-- [ ] T021 [US1] Verify UI tests T-UD08–T-UD10 are now GREEN in dashboard and profile test files; fix page implementation if any fail
+- [x] T021 [US1] Verify UI tests T-UD08–T-UD10 are now GREEN in dashboard and profile test files; fix page implementation if any fail
 
 **Checkpoint**: All T-UD01–T-UD10 tests pass. Dashboard shows real first name + green toast on load. Profile shows real email. Red toast fires on backend error. Session expired redirects to `/login`.
 
@@ -112,13 +112,13 @@
 
 **Purpose**: Cross-cutting quality gates across the full feature.
 
-- [ ] T022 [P] Run full test suite: `cd website && npm test` — assert all tests pass with no regressions on login or registration flows
-- [ ] T023 [P] Run linter: `cd website && npm run lint` — fix any ESLint violations; confirm TypeScript strict mode (`no implicit any`, `const`/`let` only)
-- [ ] T024 Review `user-detail.service.ts` and `use-user-detail.ts` for cyclomatic complexity ≤ 5 per function; refactor if exceeded
-- [ ] T025 [P] Verify code coverage ≥ 80% for `user-detail.service.ts` and `use-user-detail.ts` business logic; add tests if coverage is below threshold
+- [x] T022 [P] Run full test suite: `cd website && npm test` — assert all tests pass with no regressions on login or registration flows
+- [x] T023 [P] Run linter: `cd website && npm run lint` — fix any ESLint violations; confirm TypeScript strict mode (`no implicit any`, `const`/`let` only)
+- [x] T024 Review `user-detail.service.ts` and `use-user-detail.ts` for cyclomatic complexity ≤ 5 per function; refactor if exceeded
+- [x] T025 [P] Verify code coverage ≥ 80% for `user-detail.service.ts` and `use-user-detail.ts` business logic; add tests if coverage is below threshold
 - [ ] T026 Manual smoke test per `quickstart.md` steps 1–7: sign in → toast → dashboard name → profile email → expired token → backend offline
-- [ ] T027 [P] Accessibility check: verify skeleton uses `aria-busy="true"`; verify sonner toasts are announced by screen reader (sonner uses ARIA live regions by default)
-- [ ] T028 Verify no hardcoded `"Sarah"` / `"Sarah Jenkins"` / `"s.jenkins@example.com"` remain in Dashboard or Profile pages (use grep to confirm)
+- [x] T027 [P] Accessibility check: verify skeleton uses `aria-busy="true"`; verify sonner toasts are announced by screen reader (sonner uses ARIA live regions by default)
+- [x] T028 Verify no hardcoded `"Sarah"` / `"Sarah Jenkins"` / `"s.jenkins@example.com"` remain in Dashboard or Profile pages (use grep to confirm)
 
 **Checkpoint**: Feature complete and ready for PR per Constitution Phase 3 (Pre-Merge Review).
 
