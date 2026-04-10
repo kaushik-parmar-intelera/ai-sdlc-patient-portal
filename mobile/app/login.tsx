@@ -6,9 +6,8 @@ import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { TextField } from "../src/components/forms/text-field";
-import { DEMO_ACCOUNT } from "../src/constants/auth";
-import { authenticateWithDemoAccount } from "../src/features/auth/auth-service";
 import { loginSchema, type LoginFormValues } from "../src/features/auth/login-form";
+import { apiLogin } from "../src/services/auth-api";
 import { useAuthStore } from "../src/store/auth-store";
 import { colors, radii, spacing, typography } from "../src/theme";
 
@@ -26,13 +25,21 @@ export default function LoginScreen() {
   });
 
   const onSubmit = handleSubmit(async (values) => {
-    const account = authenticateWithDemoAccount(values);
-    if (!account) {
-      setError("root", { message: "Incorrect email or password. Please try again." });
-      return;
+    try {
+      const data = await apiLogin(values.email, values.password);
+      const account = {
+        id: data.user.id,
+        email: data.user.email,
+        firstName: data.user.firstName,
+        lastName: data.user.lastName,
+        displayName: `${data.user.firstName} ${data.user.lastName}`.trim(),
+        role: data.user.role,
+      };
+      signIn(account, data.accessToken, data.refreshToken);
+      router.replace("/home");
+    } catch (err: any) {
+      setError("root", { message: err?.message ?? "Incorrect email or password. Please try again." });
     }
-    signIn(account);
-    router.replace("/home");
   });
 
   return (
@@ -113,12 +120,6 @@ export default function LoginScreen() {
             </View>
           </View>
 
-          {/* Demo credentials */}
-          <View style={styles.demoBox}>
-            <Text style={styles.demoHeading}>Demo credentials</Text>
-            <Text style={styles.demoText}>Email: {DEMO_ACCOUNT.email}</Text>
-            <Text style={styles.demoText}>Password: {DEMO_ACCOUNT.password}</Text>
-          </View>
         </ScrollView>
       </KeyboardAvoidingView>
 
@@ -241,24 +242,6 @@ const styles = StyleSheet.create({
     color: colors.onSurfaceVariant,
     fontSize: 12,
     lineHeight: 18,
-  },
-  demoBox: {
-    backgroundColor: colors.surfaceContainerHigh,
-    borderRadius: radii.lg,
-    padding: spacing.md,
-  },
-  demoHeading: {
-    color: colors.onSurface,
-    fontSize: 12,
-    fontWeight: "700",
-    letterSpacing: 0.6,
-    marginBottom: spacing.xs,
-    textTransform: "uppercase",
-  },
-  demoText: {
-    color: colors.onSurfaceVariant,
-    fontSize: 13,
-    marginBottom: 2,
   },
   footer: {
     backgroundColor: colors.surface,

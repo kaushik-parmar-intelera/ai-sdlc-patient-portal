@@ -1,10 +1,11 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { TextField } from "../src/components/forms/text-field";
+import { apiRegister } from "../src/services/auth-api";
 import { colors, radii, spacing, typography } from "../src/theme";
 
 export default function RegisterScreen() {
@@ -13,6 +14,31 @@ export default function RegisterScreen() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleCreate = async () => {
+    if (!firstName.trim() || !email.trim() || !password || !confirmPassword) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+    setError(null);
+    setLoading(true);
+    try {
+      const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
+      await apiRegister(fullName, email.trim(), password, confirmPassword);
+      router.replace("/login");
+    } catch (err: any) {
+      setError(err?.message ?? "Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.root}>
@@ -89,9 +115,18 @@ export default function RegisterScreen() {
           {/* Password hints */}
           <View style={styles.hintList}>
             <PasswordHint met={password.length >= 8} text="At least 8 characters" />
+            <PasswordHint met={/[A-Z]/.test(password)} text="One uppercase letter" />
             <PasswordHint met={/[!@#$%^&*]/.test(password)} text="One special character" />
             <PasswordHint met={/\d/.test(password)} text="One numerical digit" />
           </View>
+
+          <TextField
+            label="Confirm Password"
+            onChangeText={setConfirmPassword}
+            placeholder="••••••••"
+            secureTextEntry
+            value={confirmPassword}
+          />
 
           {/* Trust badge */}
           <View style={styles.trustBadge}>
@@ -103,12 +138,23 @@ export default function RegisterScreen() {
 
       {/* Sticky footer */}
       <View style={styles.footer}>
+        {error ? (
+          <View style={styles.errorBanner}>
+            <MaterialIcons color={colors.error} name="error-outline" size={20} />
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        ) : null}
         <Pressable
           accessibilityRole="button"
-          onPress={() => router.push("/login")}
-          style={({ pressed }) => [styles.createBtn, pressed && styles.createBtnPressed]}
+          disabled={loading}
+          onPress={handleCreate}
+          style={({ pressed }) => [styles.createBtn, (pressed || loading) && styles.createBtnPressed]}
         >
-          <Text style={styles.createBtnText}>Create Account</Text>
+          {loading ? (
+            <ActivityIndicator color={colors.onPrimaryContainer} size="small" />
+          ) : (
+            <Text style={styles.createBtnText}>Create Account</Text>
+          )}
         </Pressable>
         <Text style={styles.terms}>
           By creating an account, you agree to our{" "}
@@ -254,6 +300,20 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xl,
     paddingHorizontal: spacing.xl,
     paddingTop: spacing.lg,
+  },
+  errorBanner: {
+    alignItems: "center",
+    backgroundColor: colors.errorContainer,
+    borderRadius: radii.lg,
+    flexDirection: "row",
+    gap: spacing.sm,
+    padding: spacing.md,
+  },
+  errorText: {
+    color: colors.error,
+    flex: 1,
+    fontSize: 14,
+    fontWeight: "500",
   },
   createBtn: {
     alignItems: "center",
