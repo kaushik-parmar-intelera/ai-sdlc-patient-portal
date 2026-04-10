@@ -3,6 +3,31 @@
  * Covers registration input, API responses, and form states
  */
 
+// ── Backend envelope types ───────────────────────────────────────────────────
+
+export interface ApiErrorDetail {
+  field: string;
+  reason: string;
+}
+
+export interface ApiEnvelopeError {
+  code: string;
+  message: string;
+  details?: ApiErrorDetail[];
+}
+
+export interface ApiEnvelope<T> {
+  success: boolean;
+  data: T | null;
+  error: ApiEnvelopeError | null;
+  meta: {
+    timestamp: string;
+    version: string;
+  };
+}
+
+// ── Registration types ───────────────────────────────────────────────────────
+
 /**
  * User input from registration form (client-side)
  * Validated by Zod schema before submission
@@ -13,6 +38,7 @@ export interface RegistrationInput {
   email: string;
   medicalId: string;
   password: string;
+  confirmPassword: string;
   terms: boolean;
 }
 
@@ -22,6 +48,8 @@ export interface RegistrationInput {
 export interface RegistrationSuccess {
   userId: string;
   email: string;
+  firstName: string;
+  lastName: string;
   message: string;
 }
 

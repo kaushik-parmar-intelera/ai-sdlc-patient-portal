@@ -11,6 +11,7 @@ const testRegistrationInput: RegistrationInput = {
   email: 'john@example.com',
   medicalId: 'XX-001-002-003',
   password: 'SecurePass123!',
+  confirmPassword: 'SecurePass123!',
   terms: true,
 };
 
@@ -18,6 +19,8 @@ const testRegistrationInput: RegistrationInput = {
 const testSuccess: RegistrationSuccess = {
   userId: 'usr_123',
   email: 'john@example.com',
+  firstName: 'John',
+  lastName: 'Doe',
   message: 'Registration successful',
 };
 
@@ -53,6 +56,7 @@ const validInput = {
   email: 'jane@example.com',
   medicalId: 'XX-001-002-003',
   password: 'ValidPass456!!',
+  confirmPassword: 'ValidPass456!!',
   terms: true,
 };
 
@@ -69,6 +73,7 @@ const invalidInput = {
   email: 'invalid',
   medicalId: '',
   password: 'weak',
+  confirmPassword: '',
   terms: false,
 };
 

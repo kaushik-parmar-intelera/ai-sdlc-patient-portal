@@ -6,6 +6,7 @@ const validBase = {
   email: 'jane@example.com',
   medicalId: 'XX-001-002-003',
   password: 'SecurePass123!',
+  confirmPassword: 'SecurePass123!',
   terms: true,
 };
 
@@ -140,7 +141,8 @@ describe('Registration Schema Validation', () => {
     it('should accept various special characters', () => {
       const specialChars = ['!', '@', '#', '$', '%', '^', '&', '*'];
       specialChars.forEach(char => {
-        const result = registrationSchema.safeParse({ ...validBase, password: `SecurePass123${char}` });
+        const pw = `SecurePass123${char}`;
+        const result = registrationSchema.safeParse({ ...validBase, password: pw, confirmPassword: pw });
         expect(result.success).toBe(true);
       });
     });

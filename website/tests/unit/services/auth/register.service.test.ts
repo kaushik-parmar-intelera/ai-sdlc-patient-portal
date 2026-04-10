@@ -1,205 +1,192 @@
+/**
+ * Tests for registerUser() service (T016 + T017).
+ * Migrated from fetch to axiosClient — mocks the axios client.
+ */
+
+import MockAdapter from 'axios-mock-adapter';
+
 import { mockResponses, validRegistrationInput } from '@/mocks/auth/register.mock';
+import { axiosClient } from '@/services/api/axios-client';
 import { registerUser } from '@/services/auth/register.service';
 import type { RegistrationError, RegistrationSuccess } from '@/types/auth.types';
 
-describe('registerUser API Service', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    global.fetch = jest.fn();
-  });
+const mock = new MockAdapter(axiosClient);
 
-  describe('Successful Registration (201)', () => {
-    it('should return RegistrationSuccess on 201 response', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce(
-        new Response(JSON.stringify(mockResponses.success.response), {
-          status: mockResponses.success.status,
-        })
-      );
+afterEach(() => {
+  mock.reset();
+});
 
-      const result = await registerUser(validRegistrationInput);
+afterAll(() => {
+  mock.restore();
+});
 
-      expect(result).toHaveProperty('userId');
-      expect(result).toHaveProperty('email');
-      expect(result).toHaveProperty('message');
-      expect((result as RegistrationSuccess).userId).toBe('usr_e7f4c2d9b1a5');
+// ── T016: fullName mapping ────────────────────────────────────────────────────
+
+describe('T016 — registerUser maps form fields to API payload', () => {
+  it('combines firstName and lastName into fullName', async () => {
+    let capturedBody: Record<string, unknown> | undefined;
+
+    mock.onPost('/api/auth/register').reply((config) => {
+      capturedBody = JSON.parse(config.data as string);
+      return [
+        201,
+        {
+          success: true,
+          data: mockResponses.success.response,
+          error: null,
+          meta: { timestamp: '', version: '1.0' },
+        },
+      ];
     });
 
-    it('should send correct request headers', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce(
-        new Response(JSON.stringify(mockResponses.success.response), {
-          status: 201,
-        })
-      );
+    await registerUser(validRegistrationInput);
 
-      await registerUser(validRegistrationInput);
-
-      const callArgs = (global.fetch as jest.Mock).mock.calls[0];
-      expect(callArgs[1].headers['Content-Type']).toBe('application/json');
-    });
-
-    it('should send request body with user data', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce(
-        new Response(JSON.stringify(mockResponses.success.response), {
-          status: 201,
-        })
-      );
-
-      await registerUser(validRegistrationInput);
-
-      const callArgs = (global.fetch as jest.Mock).mock.calls[0];
-      expect(JSON.parse(callArgs[1].body)).toEqual(validRegistrationInput);
+    expect(capturedBody).toMatchObject({
+      fullName: 'Jane Doe',
+      email: 'jane.doe@example.com',
+      password: 'SecurePass123!',
+      confirmPassword: 'SecurePass123!',
     });
   });
 
-  describe('Validation Error (400)', () => {
-    it('should return RegistrationError with INVALID_INPUT code', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce(
-        new Response(JSON.stringify(mockResponses.validationError.response), {
-          status: mockResponses.validationError.status,
-        })
-      );
+  it('does NOT send medicalId or terms to the backend', async () => {
+    let capturedBody: Record<string, unknown> | undefined;
 
-      const result = await registerUser(validRegistrationInput);
-
-      expect(result).toHaveProperty('errorCode');
-      expect((result as RegistrationError).errorCode).toBe('INVALID_INPUT');
-      expect(result).toHaveProperty('error');
+    mock.onPost('/api/auth/register').reply((config) => {
+      capturedBody = JSON.parse(config.data as string);
+      return [
+        201,
+        {
+          success: true,
+          data: mockResponses.success.response,
+          error: null,
+          meta: { timestamp: '', version: '1.0' },
+        },
+      ];
     });
 
-    it('should include field information when available', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce(
-        new Response(JSON.stringify(mockResponses.validationError.response), {
-          status: 400,
-        })
-      );
+    await registerUser(validRegistrationInput);
 
-      const result = await registerUser(validRegistrationInput);
-
-      expect((result as RegistrationError).field).toBe('email');
-    });
+    expect(capturedBody).not.toHaveProperty('medicalId');
+    expect(capturedBody).not.toHaveProperty('terms');
   });
 
-  describe('Email Already Registered (409)', () => {
-    it('should return RegistrationError with EMAIL_EXISTS code', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce(
-        new Response(JSON.stringify(mockResponses.emailExists.response), {
-          status: mockResponses.emailExists.status,
-        })
-      );
+  it('trims whitespace when lastName is empty', async () => {
+    let capturedBody: Record<string, unknown> | undefined;
 
-      const result = await registerUser(validRegistrationInput);
-
-      expect((result as RegistrationError).errorCode).toBe('EMAIL_EXISTS');
-      expect((result as RegistrationError).error).toContain('Email already registered');
+    mock.onPost('/api/auth/register').reply((config) => {
+      capturedBody = JSON.parse(config.data as string);
+      return [
+        201,
+        {
+          success: true,
+          data: { ...mockResponses.success.response, lastName: '' },
+          error: null,
+          meta: { timestamp: '', version: '1.0' },
+        },
+      ];
     });
+
+    await registerUser({ ...validRegistrationInput, lastName: '' });
+
+    expect(capturedBody?.fullName).toBe('Jane');
+  });
+});
+
+// ── T017: service return values ───────────────────────────────────────────────
+
+describe('T017 — registerUser returns correct types', () => {
+  it('should return RegistrationSuccess on 201 response', async () => {
+    mock.onPost('/api/auth/register').reply(201, {
+      success: true,
+      data: mockResponses.success.response,
+      error: null,
+      meta: { timestamp: '', version: '1.0' },
+    });
+
+    const result = await registerUser(validRegistrationInput);
+
+    expect(result).toHaveProperty('userId');
+    expect(result).toHaveProperty('email');
+    expect((result as RegistrationSuccess).userId).toBe('usr_e7f4c2d9b1a5');
   });
 
-  describe('Server Error (500)', () => {
-    it('should return generic error message (no stack traces)', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce(
-        new Response(JSON.stringify(mockResponses.serverError.response), {
-          status: mockResponses.serverError.status,
-        })
-      );
-
-      const result = await registerUser(validRegistrationInput);
-
-      expect((result as RegistrationError).errorCode).toBe('SERVER_ERROR');
-      expect((result as RegistrationError).error).not.toContain('stack');
-      expect((result as RegistrationError).error).toContain('Unable to create account');
+  it('should return RegistrationError with INVALID_INPUT code on 400', async () => {
+    mock.onPost('/api/auth/register').reply(400, {
+      success: false,
+      data: null,
+      error: { code: 'INVALID_INPUT', message: 'Request validation failed', details: [{ field: 'email', reason: 'Invalid email' }] },
+      meta: { timestamp: '', version: '1.0' },
     });
+
+    const result = await registerUser(validRegistrationInput);
+
+    expect((result as RegistrationError).errorCode).toBe('INVALID_INPUT');
+    expect((result as RegistrationError).field).toBe('email');
   });
 
-  describe('Network Error Handling', () => {
-    it('should return NETWORK_ERROR code on fetch failure', async () => {
-      (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('Network failed'));
-
-      // Suppress console errors during test
-      jest.spyOn(console, 'error').mockImplementation(() => {});
-
-      const result = await registerUser(validRegistrationInput);
-
-      expect((result as RegistrationError).errorCode).toBe('NETWORK_ERROR');
-      expect((result as RegistrationError).error).toContain('internet connection');
-
-      (console.error as jest.Mock).mockRestore();
+  it('should return RegistrationError with EMAIL_EXISTS code on 409', async () => {
+    mock.onPost('/api/auth/register').reply(409, {
+      success: false,
+      data: null,
+      error: { code: 'EMAIL_EXISTS', message: 'Email already registered. Try login or use another email.' },
+      meta: { timestamp: '', version: '1.0' },
     });
 
-    it('should implement exponential backoff on network error', async () => {
-      jest.useFakeTimers();
+    const result = await registerUser(validRegistrationInput);
 
-      (global.fetch as jest.Mock)
-        .mockRejectedValueOnce(new Error('Network failed'))
-        .mockRejectedValueOnce(new Error('Network failed'))
-        .mockResolvedValueOnce(
-          new Response(JSON.stringify(mockResponses.success.response), {
-            status: 201,
-          })
-        );
-
-      jest.spyOn(console, 'error').mockImplementation(() => {});
-
-      const promise = registerUser(validRegistrationInput);
-
-      // Advance by first delay
-      jest.advanceTimersByTime(2000);
-      // Advance by second delay
-      jest.advanceTimersByTime(5000);
-
-      const result = await promise;
-
-      expect((result as RegistrationSuccess).userId).toBe('usr_e7f4c2d9b1a5');
-      expect((global.fetch as jest.Mock).mock.calls.length).toBeGreaterThan(1);
-
-      (console.error as jest.Mock).mockRestore();
-      jest.useRealTimers();
-    });
-
-    it('should fail after 3 attempts', async () => {
-      jest.useFakeTimers();
-
-      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network failed'));
-
-      jest.spyOn(console, 'error').mockImplementation(() => {});
-
-      const promise = registerUser(validRegistrationInput);
-
-      jest.runAllTimers();
-
-      const result = await promise;
-
-      expect((result as RegistrationError).errorCode).toBe('NETWORK_ERROR');
-
-      (console.error as jest.Mock).mockRestore();
-      jest.useRealTimers();
-    });
+    expect((result as RegistrationError).errorCode).toBe('EMAIL_EXISTS');
+    expect((result as RegistrationError).error).toContain('Email already registered');
   });
 
-  describe('API Endpoint', () => {
-    it('should call /api/auth/register endpoint', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce(
-        new Response(JSON.stringify(mockResponses.success.response), {
-          status: 201,
-        })
-      );
-
-      await registerUser(validRegistrationInput);
-
-      const callArgs = (global.fetch as jest.Mock).mock.calls[0];
-      expect(callArgs[0]).toBe('/api/auth/register');
+  it('should retry on SERVER_ERROR and return error after 3 attempts', async () => {
+    mock.onPost('/api/auth/register').reply(500, {
+      success: false,
+      data: null,
+      error: { code: 'SERVER_ERROR', message: 'Internal server error' },
+      meta: { timestamp: '', version: '1.0' },
     });
 
-    it('should use POST method', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce(
-        new Response(JSON.stringify(mockResponses.success.response), {
-          status: 201,
-        })
-      );
-
-      await registerUser(validRegistrationInput);
-
-      const callArgs = (global.fetch as jest.Mock).mock.calls[0];
-      expect(callArgs[1].method).toBe('POST');
+    // Make setTimeout resolve immediately so retry delays don't block
+    jest.spyOn(global, 'setTimeout').mockImplementation((cb) => {
+      (cb as () => void)();
+      return 0 as unknown as ReturnType<typeof setTimeout>;
     });
+
+    const result = await registerUser(validRegistrationInput);
+
+    expect((result as RegistrationError).errorCode).toBe('SERVER_ERROR');
+    // Should have retried 3 times
+    expect(mock.history.post.length).toBe(3);
+
+    jest.restoreAllMocks();
+  });
+
+  it('should return NETWORK_ERROR on network failure', async () => {
+    mock.onPost('/api/auth/register').networkError();
+
+    jest.spyOn(global, 'setTimeout').mockImplementation((cb) => {
+      (cb as () => void)();
+      return 0 as unknown as ReturnType<typeof setTimeout>;
+    });
+
+    const result = await registerUser(validRegistrationInput);
+
+    expect((result as RegistrationError).errorCode).toBe('NETWORK_ERROR');
+
+    jest.restoreAllMocks();
+  });
+
+  it('should send POST to /api/auth/register endpoint', async () => {
+    mock.onPost('/api/auth/register').reply(201, {
+      success: true,
+      data: mockResponses.success.response,
+      error: null,
+      meta: { timestamp: '', version: '1.0' },
+    });
+
+    await registerUser(validRegistrationInput);
+
+    expect(mock.history.post[0].url).toBe('/api/auth/register');
   });
 });

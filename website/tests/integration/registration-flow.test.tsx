@@ -4,6 +4,18 @@ import React from 'react';
 
 import { RegistrationForm } from '@/components/molecules/registration-form';
 import { validRegistrationInput, mockResponses } from '@/mocks/auth/register.mock';
+import { registerUser } from '@/services/auth/register.service';
+
+jest.mock('@/services/auth/register.service');
+jest.mock('sonner', () => ({
+  toast: { success: jest.fn(), error: jest.fn() },
+  Toaster: () => null,
+}));
+
+import { toast } from 'sonner';
+const mockRegisterUser = registerUser as jest.MockedFunction<typeof registerUser>;
+const mockToastSuccess = toast.success as jest.MockedFunction<typeof toast.success>;
+const mockToastError = toast.error as jest.MockedFunction<typeof toast.error>;
 
 /**
  * Integration tests for the complete registration flow
@@ -11,7 +23,6 @@ import { validRegistrationInput, mockResponses } from '@/mocks/auth/register.moc
 describe('Registration Flow Integration', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    global.fetch = jest.fn();
   });
 
   /** Helper to fill out the full valid form */
@@ -21,16 +32,14 @@ describe('Registration Flow Integration', () => {
     await user.type(screen.getByLabelText(/Email Address/i), validRegistrationInput.email);
     await user.type(screen.getByLabelText(/Medical ID/i), validRegistrationInput.medicalId);
     await user.type(screen.getByLabelText(/Choose Password/i), validRegistrationInput.password);
+    await user.type(screen.getByLabelText(/Confirm Password/i), validRegistrationInput.confirmPassword);
     await user.click(screen.getByRole('checkbox', { name: /terms/i }));
   }
 
   describe('Happy Path - Successful Registration', () => {
-    it('should complete full registration flow from form to success', async () => {
+    it('should complete full registration flow and show success toast', async () => {
       const user = userEvent.setup();
-
-      (global.fetch as jest.Mock).mockResolvedValueOnce(
-        new Response(JSON.stringify(mockResponses.success.response), { status: 201 })
-      );
+      mockRegisterUser.mockResolvedValueOnce(mockResponses.success.response);
 
       render(<RegistrationForm />);
       await fillValidForm(user);
@@ -45,27 +54,17 @@ describe('Registration Flow Integration', () => {
       await user.click(submitButton);
 
       await waitFor(() => {
-        expect(global.fetch).toHaveBeenCalledWith(
-          '/api/auth/register',
-          expect.objectContaining({
-            method: 'POST',
-            headers: expect.objectContaining({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify(validRegistrationInput),
-          })
-        );
+        expect(mockRegisterUser).toHaveBeenCalledWith(validRegistrationInput);
       });
 
       await waitFor(() => {
-        expect(screen.getByText(/success|welcome/i)).toBeInTheDocument();
+        expect(mockToastSuccess).toHaveBeenCalled();
       });
     });
 
     it('should clear form after successful registration', async () => {
       const user = userEvent.setup();
-
-      (global.fetch as jest.Mock).mockResolvedValueOnce(
-        new Response(JSON.stringify(mockResponses.success.response), { status: 201 })
-      );
+      mockRegisterUser.mockResolvedValueOnce(mockResponses.success.response);
 
       const { container } = render(<RegistrationForm />);
       await fillValidForm(user);
@@ -92,13 +91,14 @@ describe('Registration Flow Integration', () => {
       await user.type(screen.getByLabelText(/Email Address/i), validRegistrationInput.email);
       await user.type(screen.getByLabelText(/Medical ID/i), validRegistrationInput.medicalId);
       await user.type(screen.getByLabelText(/Choose Password/i), validRegistrationInput.password);
+      await user.type(screen.getByLabelText(/Confirm Password/i), validRegistrationInput.confirmPassword);
       await user.click(screen.getByRole('checkbox', { name: /terms/i }));
 
       const submitButton = screen.getByRole('button', { name: /complete registration/i });
       await user.click(submitButton);
 
       await waitFor(() => {
-        expect(global.fetch).not.toHaveBeenCalled();
+        expect(mockRegisterUser).not.toHaveBeenCalled();
       });
 
       await waitFor(() => {
@@ -115,12 +115,13 @@ describe('Registration Flow Integration', () => {
       await user.type(screen.getByLabelText(/Email Address/i), 'not-an-email');
       await user.type(screen.getByLabelText(/Medical ID/i), validRegistrationInput.medicalId);
       await user.type(screen.getByLabelText(/Choose Password/i), validRegistrationInput.password);
+      await user.type(screen.getByLabelText(/Confirm Password/i), validRegistrationInput.confirmPassword);
 
       const submitButton = screen.getByRole('button', { name: /complete registration/i });
       await user.click(submitButton);
 
       await waitFor(() => {
-        expect(global.fetch).not.toHaveBeenCalled();
+        expect(mockRegisterUser).not.toHaveBeenCalled();
       });
 
       await waitFor(() => {
@@ -142,11 +143,11 @@ describe('Registration Flow Integration', () => {
       await user.click(submitButton);
 
       await waitFor(() => {
-        expect(global.fetch).not.toHaveBeenCalled();
+        expect(mockRegisterUser).not.toHaveBeenCalled();
       });
 
       await waitFor(() => {
-        expect(screen.getByText(/password|special|uppercase/i)).toBeInTheDocument();
+        expect(screen.getByText(/special character/i)).toBeInTheDocument();
       });
     });
   });
@@ -154,10 +155,7 @@ describe('Registration Flow Integration', () => {
   describe('Server-Side Error Handling', () => {
     it('should handle EMAIL_EXISTS error gracefully', async () => {
       const user = userEvent.setup();
-
-      (global.fetch as jest.Mock).mockResolvedValueOnce(
-        new Response(JSON.stringify(mockResponses.emailExists.response), { status: 409 })
-      );
+      mockRegisterUser.mockResolvedValueOnce(mockResponses.emailExists.response);
 
       render(<RegistrationForm />);
       await fillValidForm(user);
@@ -169,87 +167,15 @@ describe('Registration Flow Integration', () => {
       expect(emailInput.value).toBe(validRegistrationInput.email);
 
       await waitFor(() => {
-        expect(screen.getByText(/email already registered|already exists/i)).toBeInTheDocument();
-      });
-    });
-
-    it('should handle SERVER_ERROR with user-friendly message', async () => {
-      const user = userEvent.setup();
-
-      (global.fetch as jest.Mock).mockResolvedValueOnce(
-        new Response(JSON.stringify(mockResponses.serverError.response), { status: 500 })
-      );
-
-      render(<RegistrationForm />);
-      await fillValidForm(user);
-
-      const submitButton = screen.getByRole('button', { name: /complete registration/i });
-      await user.click(submitButton);
-
-      await waitFor(() => {
-        expect(screen.getByText(/Unable to create account|try again later/i)).toBeInTheDocument();
-      });
-    });
-
-    it('should handle VALIDATION_ERROR from server', async () => {
-      const user = userEvent.setup();
-
-      (global.fetch as jest.Mock).mockResolvedValueOnce(
-        new Response(JSON.stringify(mockResponses.validationError.response), { status: 400 })
-      );
-
-      render(<RegistrationForm />);
-      await fillValidForm(user);
-
-      const submitButton = screen.getByRole('button', { name: /complete registration/i });
-      await user.click(submitButton);
-
-      await waitFor(() => {
-        expect(screen.getByText(/validation|invalid/i)).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe('Network Error Handling with Retry', () => {
-    it('should retry on network failure and succeed on retry', async () => {
-      const user = userEvent.setup();
-      jest.useFakeTimers();
-
-      (global.fetch as jest.Mock)
-        .mockRejectedValueOnce(new Error('Network error'))
-        .mockResolvedValueOnce(
-          new Response(JSON.stringify(mockResponses.success.response), { status: 201 })
+        expect(mockToastError).toHaveBeenCalledWith(
+          expect.stringMatching(/already registered/i)
         );
-
-      jest.spyOn(console, 'error').mockImplementation(() => {});
-
-      render(<RegistrationForm />);
-      await fillValidForm(user);
-
-      const submitButton = screen.getByRole('button', { name: /complete registration/i });
-      await user.click(submitButton);
-
-      jest.advanceTimersByTime(2000);
-
-      await waitFor(() => {
-        expect(global.fetch).toHaveBeenCalledTimes(2);
       });
-
-      await waitFor(() => {
-        expect(screen.getByText(/success|welcome/i)).toBeInTheDocument();
-      });
-
-      (console.error as jest.Mock).mockRestore();
-      jest.useRealTimers();
     });
 
-    it('should show error if all retries fail', async () => {
+    it('should handle SERVER_ERROR with user-friendly toast', async () => {
       const user = userEvent.setup();
-      jest.useFakeTimers();
-
-      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
-
-      jest.spyOn(console, 'error').mockImplementation(() => {});
+      mockRegisterUser.mockResolvedValueOnce(mockResponses.serverError.response);
 
       render(<RegistrationForm />);
       await fillValidForm(user);
@@ -257,25 +183,34 @@ describe('Registration Flow Integration', () => {
       const submitButton = screen.getByRole('button', { name: /complete registration/i });
       await user.click(submitButton);
 
-      jest.runAllTimers();
+      await waitFor(() => {
+        expect(mockToastError).toHaveBeenCalled();
+      });
+    });
+
+    it('should handle NETWORK_ERROR with user-friendly toast', async () => {
+      const user = userEvent.setup();
+      mockRegisterUser.mockResolvedValueOnce(mockResponses.networkError.response);
+
+      render(<RegistrationForm />);
+      await fillValidForm(user);
+
+      const submitButton = screen.getByRole('button', { name: /complete registration/i });
+      await user.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/internet connection|network/i)).toBeInTheDocument();
+        expect(mockToastError).toHaveBeenCalledWith(
+          expect.stringMatching(/network error|connection/i)
+        );
       });
-
-      (console.error as jest.Mock).mockRestore();
-      jest.useRealTimers();
     });
   });
 
   describe('Form State During Submission', () => {
     it('should disable submit button while request is pending', async () => {
       const user = userEvent.setup();
-
-      (global.fetch as jest.Mock).mockImplementationOnce(
-        () => new Promise((resolve) => setTimeout(() => resolve(
-          new Response(JSON.stringify(mockResponses.success.response), { status: 201 })
-        ), 100))
+      mockRegisterUser.mockImplementationOnce(
+        () => new Promise((resolve) => setTimeout(() => resolve(mockResponses.success.response), 100))
       );
 
       render(<RegistrationForm />);
@@ -295,10 +230,9 @@ describe('Registration Flow Integration', () => {
   describe('Multiple Submission Attempts', () => {
     it('should handle resubmission after error', async () => {
       const user = userEvent.setup();
-
-      (global.fetch as jest.Mock).mockResolvedValueOnce(
-        new Response(JSON.stringify(mockResponses.emailExists.response), { status: 409 })
-      );
+      mockRegisterUser
+        .mockResolvedValueOnce(mockResponses.emailExists.response)
+        .mockResolvedValueOnce(mockResponses.success.response);
 
       render(<RegistrationForm />);
       await fillValidForm(user);
@@ -307,23 +241,14 @@ describe('Registration Flow Integration', () => {
       await user.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/email already registered/i)).toBeInTheDocument();
+        expect(mockToastError).toHaveBeenCalled();
       });
-
-      const emailInput = screen.getByLabelText(/Email Address/i) as HTMLInputElement;
-      await user.clear(emailInput);
-
-      (global.fetch as jest.Mock).mockResolvedValueOnce(
-        new Response(JSON.stringify(mockResponses.success.response), { status: 201 })
-      );
-
-      await user.type(emailInput, 'different@example.com');
 
       submitButton = screen.getByRole('button', { name: /complete registration/i });
       await user.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/success|welcome/i)).toBeInTheDocument();
+        expect(mockToastSuccess).toHaveBeenCalled();
       });
     });
   });

@@ -5,6 +5,8 @@ export const mockResponses = {
     response: {
       userId: 'usr_e7f4c2d9b1a5',
       email: 'jane.doe@example.com',
+      firstName: 'Jane',
+      lastName: 'Doe',
       message: 'Account created successfully',
     } as RegistrationSuccess,
     status: 201,
@@ -51,6 +53,7 @@ export const validRegistrationInput = {
   email: 'jane.doe@example.com',
   medicalId: 'XX-001-002-003',
   password: 'SecurePass123!',
+  confirmPassword: 'SecurePass123!',
   terms: true,
 };
 
@@ -61,6 +64,7 @@ export const invalidRegistrationInputs = {
     email: 'jane@example.com',
     medicalId: 'XX-001-002-003',
     password: 'SecurePass123!',
+    confirmPassword: 'SecurePass123!',
     terms: true,
   },
   invalidEmail: {
@@ -69,6 +73,7 @@ export const invalidRegistrationInputs = {
     email: 'invalid-email',
     medicalId: 'XX-001-002-003',
     password: 'SecurePass123!',
+    confirmPassword: 'SecurePass123!',
     terms: true,
   },
   weakPassword: {
@@ -77,6 +82,7 @@ export const invalidRegistrationInputs = {
     email: 'jane@example.com',
     medicalId: 'XX-001-002-003',
     password: 'password',
+    confirmPassword: 'password',
     terms: true,
   },
 };
