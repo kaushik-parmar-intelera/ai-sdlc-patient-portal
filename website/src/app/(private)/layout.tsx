@@ -1,8 +1,10 @@
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
+import { Toaster } from 'sonner';
 
 import { useAuthSessionStore } from '@/store/auth-session.store';
 
@@ -19,6 +21,7 @@ export default function PrivateLayout({ children }: { children: React.ReactNode 
   const userMenuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const isAuthenticated = useAuthSessionStore((s) => s.isAuthenticated);
   const setLoggedOut = useAuthSessionStore((s) => s.setLoggedOut);
   const user = useAuthSessionStore((s) => s.user);
@@ -41,6 +44,7 @@ export default function PrivateLayout({ children }: { children: React.ReactNode 
 
   const handleSignOut = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
+    queryClient.removeQueries({ queryKey: ['user'] });
     setLoggedOut();
     localStorage.clear();
     router.push('/login');
@@ -217,6 +221,8 @@ export default function PrivateLayout({ children }: { children: React.ReactNode 
       <main id="main-content" className="pt-[72px]">
         {children}
       </main>
+
+      <Toaster position="top-right" richColors closeButton />
     </div>
   );
 }

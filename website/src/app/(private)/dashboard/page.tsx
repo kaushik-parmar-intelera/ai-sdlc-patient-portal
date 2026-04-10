@@ -1,7 +1,16 @@
+'use client';
+
 import Link from 'next/link';
 import React from 'react';
 
+import { useUserDetail } from '@/hooks/user/use-user-detail';
+
 export default function DashboardPage() {
+  const { userDetail, isLoading } = useUserDetail();
+
+  const displayName = isLoading ? null : `${userDetail?.firstName ?? ''} ${userDetail?.lastName ?? ''}`.trim() || 'Patient';
+  const firstName = isLoading ? null : (userDetail?.firstName ?? 'Patient');
+
   return (
     <>
       <div className="pt-8 pb-20 px-6 max-w-7xl mx-auto">
@@ -12,7 +21,15 @@ export default function DashboardPage() {
               Dashboard Overview
             </span>
             <h1 className="text-4xl font-extrabold tracking-tight text-primary mt-1 font-headline">
-              Welcome back, Sarah.
+              {isLoading ? (
+                <span
+                  aria-busy="true"
+                  aria-label="Loading user name"
+                  className="inline-block h-9 w-56 animate-pulse rounded-md bg-slate-200"
+                />
+              ) : (
+                <>Welcome back, {firstName}.</>
+              )}
             </h1>
             <p className="text-on-surface-variant mt-2 text-lg">
               Your health summary is up to date as of today.
@@ -41,11 +58,21 @@ export default function DashboardPage() {
                 <img
                   alt="Sarah Jenkins"
                   className="w-full h-full object-cover"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9pPEMKMT3rFTF-DkjEPoTcq0ph89Kd7upWp6FDDFXrpPtjXjjIdQtG2DUPX1HXHEFPiTdfRAA2_u0-SBGMjupOXutZrUzCGgp76BmR8B5LC5fKxi-UKC7Wa0VPmqzxtMCy80CZl_IAFsYrCKgpHUyuCTSTJEC8yUsGol86lgNj3jKvJUO_IGxXVlWfxDLID06Ig4vmD2qqAiIMTnwf-gJTGA9coQzrC3GV9RyFgqWJ1s-Dp9ucbXEhk8JIkCBrz_egTJ2hkmO_LQ"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1ravwuTZbWQUAkvCuVFLdiFWJhxPx4qxeBX4g8LHJ0RNKp5Q1jvyjy8sirwhRly_uEc9e2rJLS6aOC-v8xNU2sG7npyR-2sHgAB5dLLtTR5OFMW1W58v9j3Km_GIf7sh16DgVGMmFQJwkq3tx0gqZbNbsweKX_h-g2O33kz9JRTgj3fIp4po5nIHSUkG_JFe1oG4Kny_f5N0IDY3Ia592zJR-fsPAVYAiPRAW_obWcY25pfxt3jyk9NZ0w1Sz3j9PeX9Nrp9sroQ"
                 />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-primary font-headline">Sarah Jenkins</h2>
+                <h2 className="text-2xl font-bold text-primary font-headline">
+                  {isLoading ? (
+                    <span
+                      aria-busy="true"
+                      aria-label="Loading patient name"
+                      className="inline-block h-7 w-36 animate-pulse rounded-md bg-slate-200"
+                    />
+                  ) : (
+                    displayName
+                  )}
+                </h2>
                 <p className="text-on-surface-variant text-sm font-medium">Patient ID: #CC-88291</p>
               </div>
             </div>

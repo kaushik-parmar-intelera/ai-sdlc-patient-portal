@@ -114,3 +114,33 @@ export function isLoginSuccess(r: LoginSuccess | LoginError): r is LoginSuccess 
 export function isLoginError(r: LoginSuccess | LoginError): r is LoginError {
   return 'errorCode' in r;
 }
+
+// ── User Detail types ────────────────────────────────────────────────────────
+
+export interface UserDetail {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+  isActive: boolean;
+}
+
+export type UserDetailSuccess = UserDetail;
+
+export interface UserDetailError {
+  errorCode: string;
+  error: string;
+}
+
+export function isUserDetailSuccess(
+  r: UserDetailSuccess | UserDetailError
+): r is UserDetailSuccess {
+  return 'id' in r && !('errorCode' in r);
+}
+
+export function isUserDetailError(
+  r: UserDetailSuccess | UserDetailError
+): r is UserDetailError {
+  return 'errorCode' in r;
+}
