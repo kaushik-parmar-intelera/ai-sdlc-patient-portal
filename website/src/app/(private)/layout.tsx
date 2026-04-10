@@ -7,6 +7,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Toaster } from 'sonner';
 
 import { useAuthSessionStore } from '@/store/auth-session.store';
+import FemaleUserProfileIcon from "../../assets/images/female-profile-icon.png";
 
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'Dashboard' },
@@ -106,10 +107,15 @@ export default function PrivateLayout({ children }: { children: React.ReactNode 
                 aria-label="User menu"
                 aria-expanded={userMenuOpen}
               >
-                <img
+                {/* <img
                   alt="User profile"
                   className="w-full h-full object-cover"
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3zsKmYoEpYW1ZpAkJ8mzlpdndwGqhJhBrrgOtG8ZMtNuR5ShASDkCgGsfjud0q4zntiFpN0HgkdEzu5fw_ctUfc2T6Z-9Jin60utWRbkPCvqpr1aafZasKVCe5Aauvwyovz_xuLsIVCTsup5_ecKu8Z95B6KQT0_AAJCM3UvU7H9IMaZ9OZfurKKenfrMwYrcEeV_4C-eEmn_Tp5WdHvHXptBQtVm7wjTiE3V48TUMig2664XbwDNYnC2VYVNoM3IxCMOsm8ds5Q"
+                /> */}
+                <img
+                  alt="User profile"
+                  className="w-full h-full object-cover"
+                  src={FemaleUserProfileIcon.src}
                 />
               </button>
 
