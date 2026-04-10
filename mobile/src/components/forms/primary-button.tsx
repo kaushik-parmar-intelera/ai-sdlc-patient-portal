@@ -1,16 +1,33 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text } from "react-native";
 
-import { colors, radii, spacing, typography } from "../../theme";
+import { colors, radii, typography } from "../../theme";
 
 type PrimaryButtonProps = {
+  disabled?: boolean;
   label: string;
+  loading?: boolean;
   onPress: () => void;
+  variant?: "primary" | "secondary";
 };
 
-export function PrimaryButton({ label, onPress }: PrimaryButtonProps) {
+export function PrimaryButton({ disabled, label, loading, onPress, variant = "primary" }: PrimaryButtonProps) {
+  const isPrimary = variant === "primary";
   return (
-    <Pressable accessibilityRole="button" onPress={onPress} style={({ pressed }) => [styles.button, pressed ? styles.buttonPressed : null]}>
-      <Text style={styles.label}>{label}</Text>
+    <Pressable
+      accessibilityRole="button"
+      disabled={disabled || loading}
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.button,
+        isPrimary ? styles.buttonPrimary : styles.buttonSecondary,
+        (pressed || disabled || loading) ? styles.buttonPressed : null,
+      ]}
+    >
+      {loading ? (
+        <ActivityIndicator color={isPrimary ? colors.onPrimaryContainer : colors.onSurfaceVariant} />
+      ) : (
+        <Text style={[styles.label, isPrimary ? styles.labelPrimary : styles.labelSecondary]}>{label}</Text>
+      )}
     </Pressable>
   );
 }
@@ -18,18 +35,31 @@ export function PrimaryButton({ label, onPress }: PrimaryButtonProps) {
 const styles = StyleSheet.create({
   button: {
     alignItems: "center",
-    backgroundColor: colors.deepTeal,
-    borderRadius: radii.pill,
-    minHeight: 56,
+    borderRadius: radii.md,
+    height: 56,
     justifyContent: "center",
-    paddingHorizontal: spacing.lg,
+    width: "100%",
+  },
+  buttonPrimary: {
+    backgroundColor: colors.primaryContainer,
+  },
+  buttonSecondary: {
+    backgroundColor: "transparent",
+    borderColor: colors.secondaryFixedDim,
+    borderWidth: 2,
   },
   buttonPressed: {
-    opacity: 0.88,
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
   },
   label: {
-    color: colors.cream,
     fontSize: typography.body.fontSize,
-    fontWeight: "700",
+    fontWeight: "600",
+  },
+  labelPrimary: {
+    color: colors.onPrimaryContainer,
+  },
+  labelSecondary: {
+    color: colors.onSurfaceVariant,
   },
 });

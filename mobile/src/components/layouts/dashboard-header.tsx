@@ -1,57 +1,60 @@
-import { LinearGradient } from "expo-linear-gradient";
+import { MaterialIcons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
 
-import { colors, radii, shadows, spacing, typography } from "../../theme";
+import { colors, spacing, typography } from "../../theme";
 
 type DashboardHeaderProps = {
-  eyebrow: string;
   subtitle: string;
   title: string;
+  onNotifications?: () => void;
 };
 
-export function DashboardHeader({ eyebrow, subtitle, title }: DashboardHeaderProps) {
+export function DashboardHeader({ subtitle, title }: DashboardHeaderProps) {
   return (
-    <LinearGradient colors={[colors.deepTeal, colors.teal]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.container}>
-      <View style={styles.badge}>
-        <Text style={styles.badgeText}>{eyebrow}</Text>
+    <View style={styles.container}>
+      <View style={styles.trustBadge}>
+        <MaterialIcons color={colors.onSurfaceVariant} name="lock" size={14} />
+        <Text style={styles.trustText}>End-to-End Encrypted</Text>
       </View>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.subtitle}>{subtitle}</Text>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: radii.xl,
     marginBottom: spacing.xl,
-    padding: spacing.xl,
-    ...shadows.card,
+    paddingTop: spacing.sm,
   },
-  badge: {
+  trustBadge: {
+    alignItems: "center",
     alignSelf: "flex-start",
-    backgroundColor: colors.overlay,
-    borderRadius: radii.pill,
+    backgroundColor: colors.surfaceContainerHigh,
+    borderRadius: 99,
+    flexDirection: "row",
+    gap: 6,
     marginBottom: spacing.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
   },
-  badgeText: {
-    color: colors.cream,
-    fontSize: typography.overline.fontSize,
-    fontWeight: typography.overline.fontWeight,
-    letterSpacing: typography.overline.letterSpacing,
+  trustText: {
+    color: colors.onSurfaceVariant,
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 0.8,
     textTransform: "uppercase",
   },
   title: {
-    color: colors.cream,
+    color: colors.onSurface,
     fontSize: typography.display.fontSize,
     fontWeight: typography.display.fontWeight,
-    marginBottom: spacing.sm,
+    letterSpacing: typography.display.letterSpacing,
+    marginBottom: 4,
   },
   subtitle: {
-    color: colors.creamMuted,
+    color: colors.onSurfaceVariant,
     fontSize: typography.body.fontSize,
-    lineHeight: typography.body.lineHeight,
+    opacity: 0.8,
   },
 });

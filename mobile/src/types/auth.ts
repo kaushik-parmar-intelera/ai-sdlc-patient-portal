@@ -1,7 +1,7 @@
 export type DemoAccount = {
   displayName: string;
+  email: string;
   password: string;
-  username: string;
 };
 
 export type AuthState = {

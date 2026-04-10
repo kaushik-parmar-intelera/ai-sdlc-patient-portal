@@ -9,16 +9,16 @@ type DashboardCardProps = {
   value: string;
 };
 
-const toneMap = {
-  teal: colors.mint,
-  gold: colors.gold,
-  coral: colors.coral,
+const toneAccent: Record<string, string> = {
+  teal: "#A8D8C8",
+  gold: colors.tertiaryContainer,
+  coral: colors.errorContainer,
 };
 
 export function DashboardCard({ caption, label, tone, value }: DashboardCardProps) {
   return (
     <View style={styles.card}>
-      <View style={[styles.toneMarker, { backgroundColor: toneMap[tone] }]} />
+      <View style={[styles.accent, { backgroundColor: toneAccent[tone] }]} />
       <Text style={styles.label}>{label}</Text>
       <Text style={styles.value}>{value}</Text>
       <Text style={styles.caption}>{caption}</Text>
@@ -28,33 +28,35 @@ export function DashboardCard({ caption, label, tone, value }: DashboardCardProp
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.surface,
-    borderRadius: radii.lg,
+    backgroundColor: colors.surfaceContainerLow,
+    borderRadius: radii.xl,
     flexBasis: "47%",
     minWidth: 150,
     padding: spacing.lg,
     ...shadows.card,
   },
-  toneMarker: {
+  accent: {
     borderRadius: radii.pill,
-    height: 6,
+    height: 4,
     marginBottom: spacing.md,
-    width: 48,
+    width: 40,
   },
   label: {
-    color: colors.muted,
+    color: colors.onSurfaceVariant,
     fontSize: typography.caption.fontSize,
+    fontWeight: "500",
     marginBottom: spacing.xs,
     textTransform: "uppercase",
+    letterSpacing: 0.6,
   },
   value: {
-    color: colors.ink,
+    color: colors.onSurface,
     fontSize: 24,
     fontWeight: "700",
     marginBottom: spacing.xs,
   },
   caption: {
-    color: colors.muted,
+    color: colors.onSurfaceVariant,
     fontSize: typography.bodySmall.fontSize,
     lineHeight: typography.bodySmall.lineHeight,
   },

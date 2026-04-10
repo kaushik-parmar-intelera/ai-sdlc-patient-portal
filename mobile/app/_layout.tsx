@@ -4,10 +4,18 @@ import { StatusBar } from "expo-status-bar";
 export default function RootLayout() {
   return (
     <>
-      <StatusBar style="light" />
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: "#F4EFE7" } }}>
+      <StatusBar style="dark" />
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: "#F8F9FC" } }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="splash" />
         <Stack.Screen name="login" />
+        <Stack.Screen name="register" />
         <Stack.Screen name="home" />
+        <Stack.Screen name="appointments" />
+        <Stack.Screen name="prescriptions" />
+        <Stack.Screen name="profile" />
+        <Stack.Screen name="profile-edit" options={{ presentation: "modal" }} />
+        <Stack.Screen name="session-expired" />
       </Stack>
     </>
   );

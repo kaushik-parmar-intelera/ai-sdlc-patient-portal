@@ -2,19 +2,25 @@ import { PropsWithChildren } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { colors, spacing } from "../../theme";
+import { colors } from "../../theme";
 
 type ScreenContainerProps = PropsWithChildren<{
   scrollable?: boolean;
+  edges?: ("top" | "bottom" | "left" | "right")[];
+  padded?: boolean;
 }>;
 
-export function ScreenContainer({ children, scrollable = true }: ScreenContainerProps) {
-  const content = <View style={styles.content}>{children}</View>;
+export function ScreenContainer({ children, scrollable = true, edges = ["top", "bottom"], padded = true }: ScreenContainerProps) {
+  const content = <View style={[styles.content, !padded && styles.noPad]}>{children}</View>;
 
   return (
-    <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
+    <SafeAreaView edges={edges} style={styles.safeArea}>
       {scrollable ? (
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
           {content}
         </ScrollView>
       ) : (
@@ -26,12 +32,17 @@ export function ScreenContainer({ children, scrollable = true }: ScreenContainer
 
 const styles = StyleSheet.create({
   safeArea: {
-    backgroundColor: colors.background,
+    backgroundColor: colors.surface,
     flex: 1,
   },
   content: {
     flex: 1,
-    padding: spacing.lg,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+  },
+  noPad: {
+    paddingHorizontal: 0,
+    paddingTop: 0,
   },
   scrollContent: {
     flexGrow: 1,
