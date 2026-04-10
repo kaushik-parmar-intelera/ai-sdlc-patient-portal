@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__jira__jira_get_issue",
+      "Bash(d:/IntelEra/Development/Github/ai-sdlc-patient-portal/tests/ai-sdlc-patient-portal/tests/.venv/Scripts/python.exe -c \"import openpyxl; print\\('openpyxl available', openpyxl.__version__\\)\")",
+      "Bash(d:/IntelEra/Development/Github/ai-sdlc-patient-portal/tests/ai-sdlc-patient-portal/tests/.venv/Scripts/pip.exe install:*)",
+      "Bash(.venv/Scripts/python.exe \"feature-tests/scrum2/_generate_test_cases.py\")",
+      "Bash(\"d:/IntelEra/Development/Github/ai-sdlc-patient-portal/tests/ai-sdlc-patient-portal/tests/.venv/Scripts/python.exe\" -m pytest feature-tests/scrum2/native/test_scrum2_login_mobile_native.py --collect-only)",
+      "Bash(PLATFORM=android \"d:/IntelEra/Development/Github/ai-sdlc-patient-portal/tests/ai-sdlc-patient-portal/tests/.venv/Scripts/python.exe\" -m pytest feature-tests/scrum2/native/test_scrum2_login_mobile_native.py --platform=android -v --tb=short --no-header)",
+      "Bash(appium --version)",
+      "Bash(npx appium:*)"
+    ]
+  }
+}

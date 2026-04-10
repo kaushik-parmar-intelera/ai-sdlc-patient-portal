@@ -1,0 +1,24 @@
+{
+  "login": {
+    "title":             "//android.widget.TextView[@text='Welcome Back']",
+    "subtitle":          "//android.widget.TextView[@text='Please enter your credentials to access your secure portal.']",
+    "email_input":       "//android.widget.EditText[@hint='e.g. j.doe@hospital.com']",
+    "password_input":    "//android.widget.EditText[@password='true']",
+    "show_hide_toggle":  "//android.widget.ImageButton[@content-desc='Show password' or @content-desc='Hide password']",
+    "forgot_password":   "//android.widget.TextView[@text='Forgot password?']",
+    "login_button":      "//android.widget.Button[@text='Sign In']",
+    "biometric_button":  "//android.widget.Button[@text='Biometric Sign-in']",
+    "register_link":     "//android.widget.TextView[@text='Register your clinical ID']",
+    "error_message":     "//android.widget.TextView[@content-desc='error-message' or contains(@text,'Invalid email or password')]",
+    "validation_error":  "//android.widget.TextView[@content-desc='validation-error']",
+    "dashboard_title":   "//android.widget.TextView[@text='Dashboard']"
+  },
+  "dashboard": {
+    "title":             "//android.widget.TextView[@text='Dashboard']",
+    "counter_label":     "//android.widget.TextView[@text='Counter']",
+    "increment_btn":     "//android.view.ViewGroup[@content-desc='+']",
+    "decrement_btn":     "//android.view.ViewGroup[@content-desc='-']",
+    "reset_btn":         "//android.view.ViewGroup[@content-desc='Reset']",
+    "logout_btn":        "//android.view.ViewGroup[@content-desc='Logout']"
+  }
+}

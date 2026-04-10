@@ -1,0 +1,3 @@
+[32m2026-04-10 17:19:27 [INFO    ] drivers.driver_factory: DriverFactory.create | platform=android | cloud=local[0m
+[33m2026-04-10 17:19:27 [WARNING ] drivers.appium_driver: No app path set. Set ANDROID_APP_PATH env var or update config yaml.[0m
+[32m2026-04-10 17:19:27 [INFO    ] drivers.appium_driver: Starting Appium session | platform=android | device=Android Emulator | server=http://127.0.0.1:4723[0m

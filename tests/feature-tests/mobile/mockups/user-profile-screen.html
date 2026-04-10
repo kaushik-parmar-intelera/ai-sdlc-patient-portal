@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Profile | Medical Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700;800;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#7699c5",
+                    "on-secondary-fixed": "#001d34",
+                    "primary-fixed": "#d2e4ff",
+                    "on-secondary-container": "#00426e",
+                    "on-secondary-fixed-variant": "#004a79",
+                    "primary-fixed-dim": "#a6c9f8",
+                    "error": "#ba1a1a",
+                    "primary-container": "#003057",
+                    "background": "#f8f9fa",
+                    "inverse-surface": "#2e3132",
+                    "outline-variant": "#c3c6cf",
+                    "on-error-container": "#93000a",
+                    "surface-container-high": "#e7e8e9",
+                    "outline": "#73777f",
+                    "inverse-on-surface": "#f0f1f2",
+                    "primary": "#001b35",
+                    "on-secondary": "#ffffff",
+                    "on-surface-variant": "#43474e",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed": "#ffdea6",
+                    "on-tertiary-fixed": "#271900",
+                    "tertiary-fixed-dim": "#f9bd3f",
+                    "on-tertiary-container": "#c28d03",
+                    "on-background": "#191c1d",
+                    "error-container": "#ffdad6",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#5e4200",
+                    "on-surface": "#191c1d",
+                    "surface-dim": "#d9dadb",
+                    "tertiary": "#251800",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed-variant": "#234871",
+                    "secondary": "#00629f",
+                    "surface-bright": "#f8f9fa",
+                    "secondary-fixed": "#d0e4ff",
+                    "surface-container-highest": "#e1e3e4",
+                    "surface": "#f8f9fa",
+                    "on-error": "#ffffff",
+                    "inverse-primary": "#a6c9f8",
+                    "surface-container": "#edeeef",
+                    "surface-variant": "#e1e3e4",
+                    "on-primary-fixed": "#001c37",
+                    "secondary-container": "#5db1fd",
+                    "surface-tint": "#3d608a",
+                    "tertiary-container": "#3f2b00",
+                    "secondary-fixed-dim": "#9bcbff",
+                    "surface-container-low": "#f3f4f5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Public Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Public Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface mb-24 md:mb-0">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-xl shadow-[0px_12px_32px_rgba(25,28,29,0.06)]">
+<div class="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-sky-900 dark:text-sky-200 active:scale-95 duration-200" data-icon="arrow_back">arrow_back</button>
+<h1 class="font-public-sans font-bold text-lg tracking-tight text-sky-900 dark:text-sky-200">Medical Portal</h1>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<nav class="flex gap-6">
+<a class="font-inter text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:text-sky-600" href="#">Home</a>
+<a class="font-inter text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:text-sky-600" href="#">Health</a>
+<a class="font-inter text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:text-sky-600" href="#">Records</a>
+<a class="font-inter text-[11px] font-semibold uppercase tracking-wider text-sky-700 dark:text-sky-300" href="#">Profile</a>
+</nav>
+<div class="w-8 h-8 rounded-full bg-primary overflow-hidden border-2 border-primary-fixed">
+<img alt="Profile" data-alt="professional portrait of a middle-aged male patient with friendly expression against a clean studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_8hqa4jKx5pT55xiOfrS8PFUZVEBQbVv7ssY8gqa7IWSsiOml3Fhd8IUlwKAW2ShNAW71BCdF3bX849Go28hopjGaOv65iYFdr5AM8y6Cn3NZZ-W8NhZpHa6uE6fF3LkGQKeQfCjGCen5PoG8j_N_xFQEsevbw7WO6t8sFcq0FEPuSZ4n_njXc5L0OzkHU8PFFJ8iAO1xp-f_iGRKEbY8mbvkwr81M_ur0SGz1aqZyhMfeIx8yQCPuKF44dqsnTE4d2u9P0PwlwU"/>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-6 pt-24 pb-12">
+<!-- Editorial Header Section -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
+<div>
+<span class="text-secondary font-semibold tracking-widest text-xs uppercase mb-2 block">Patient Overview</span>
+<h2 class="text-5xl font-black text-primary leading-tight">Alexander<br/>Richardson</h2>
+<div class="flex items-center gap-4 mt-6">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container text-xs font-bold rounded-full">ID: #9928-AX</span>
+<span class="flex items-center gap-1 text-sm text-outline font-medium">
+<span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span>
+                        London, UK
+                    </span>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+                    Book Appointment
+                </button>
+</div>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Health Summary Bento Items -->
+<div class="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Activity Graph Card -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(25,28,29,0.06)] flex flex-col justify-between h-64">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-outline text-xs font-bold uppercase tracking-widest mb-1">Daily Activity</h3>
+<p class="text-2xl font-bold text-primary">8,432 <span class="text-sm font-normal text-outline">Steps</span></p>
+</div>
+<div class="p-2 bg-secondary/10 rounded-lg">
+<span class="material-symbols-outlined text-secondary" data-icon="directions_run">directions_run</span>
+</div>
+</div>
+<!-- Mock Graph Visualization -->
+<div class="flex items-end gap-1 h-24 mt-4">
+<div class="w-full bg-surface-container-highest rounded-t-sm h-[40%]"></div>
+<div class="w-full bg-surface-container-highest rounded-t-sm h-[60%]"></div>
+<div class="w-full bg-secondary-container rounded-t-sm h-[85%]"></div>
+<div class="w-full bg-surface-container-highest rounded-t-sm h-[50%]"></div>
+<div class="w-full bg-secondary rounded-t-sm h-[95%]"></div>
+<div class="w-full bg-surface-container-highest rounded-t-sm h-[70%]"></div>
+<div class="w-full bg-surface-container-highest rounded-t-sm h-[45%]"></div>
+</div>
+</div>
+<!-- Heart Rate Card -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(25,28,29,0.06)] flex flex-col justify-between h-64">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-outline text-xs font-bold uppercase tracking-widest mb-1">Heart Rate</h3>
+<p class="text-2xl font-bold text-primary">72 <span class="text-sm font-normal text-outline">BPM</span></p>
+</div>
+<div class="p-2 bg-error/10 rounded-lg">
+<span class="material-symbols-outlined text-error" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+</div>
+<div class="relative h-24 mt-4 overflow-hidden">
+<!-- SVG Heartbeat Line -->
+<svg class="absolute bottom-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 200 60">
+<path d="M0,45 L40,45 L50,10 L60,55 L70,45 L110,45 L120,5 L130,55 L140,45 L200,45" fill="none" stroke="#ba1a1a" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Prescriptions Card -->
+<div class="md:col-span-2 bg-surface-container-lowest p-8 rounded-xl shadow-[0px_12px_32px_rgba(25,28,29,0.06)]">
+<div class="flex justify-between items-center mb-8">
+<h3 class="font-bold text-xl text-primary">Active Prescriptions</h3>
+<span class="material-symbols-outlined text-outline" data-icon="medication">medication</span>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="pill">pill</span>
+</div>
+<div>
+<p class="font-bold text-primary">Atorvastatin</p>
+<p class="text-xs text-outline font-medium">10mg • Once daily (Evening)</p>
+</div>
+</div>
+<span class="text-xs font-bold text-secondary">Refill in 12 days</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="pill">pill</span>
+</div>
+<div>
+<p class="font-bold text-primary">Lisinopril</p>
+<p class="text-xs text-outline font-medium">5mg • Twice daily</p>
+</div>
+</div>
+<span class="text-xs font-bold text-secondary">Refill in 5 days</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar Bento Items -->
+<div class="md:col-span-4 flex flex-col gap-6">
+<!-- Upcoming Appointment -->
+<div class="bg-primary p-8 rounded-xl text-on-primary shadow-xl flex flex-col gap-6">
+<div class="flex items-center gap-2 opacity-80">
+<span class="material-symbols-outlined text-sm" data-icon="alarm">alarm</span>
+<span class="text-xs font-bold uppercase tracking-widest">Next Appointment</span>
+</div>
+<div>
+<p class="text-2xl font-bold mb-1">Cardiology Consult</p>
+<p class="text-primary-fixed-dim font-medium">Dr. Elizabeth Vance</p>
+</div>
+<div class="bg-primary-container p-4 rounded-lg flex items-center gap-4">
+<div class="bg-secondary text-on-secondary w-12 h-12 rounded-lg flex flex-col items-center justify-center font-bold">
+<span class="text-[10px] uppercase leading-none">Oct</span>
+<span class="text-lg leading-none">24</span>
+</div>
+<div>
+<p class="text-sm font-bold">09:30 AM</p>
+<p class="text-xs opacity-70">Room 402, North Wing</p>
+</div>
+</div>
+<button class="w-full bg-tertiary-fixed text-on-tertiary-fixed py-3 rounded-lg font-black text-sm uppercase tracking-widest hover:brightness-110 transition-all">
+                        Check In
+                    </button>
+</div>
+<!-- Personal Info Card -->
+<div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/15">
+<h3 class="font-bold text-sm text-primary mb-4 uppercase tracking-widest">Vitals Summary</h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-4 bg-surface-container-lowest rounded-lg">
+<p class="text-[10px] text-outline font-bold uppercase mb-1">Height</p>
+<p class="text-lg font-bold text-primary">184 <span class="text-xs font-normal">cm</span></p>
+</div>
+<div class="p-4 bg-surface-container-lowest rounded-lg">
+<p class="text-[10px] text-outline font-bold uppercase mb-1">Weight</p>
+<p class="text-lg font-bold text-primary">82 <span class="text-xs font-normal">kg</span></p>
+</div>
+<div class="p-4 bg-surface-container-lowest rounded-lg">
+<p class="text-[10px] text-outline font-bold uppercase mb-1">Blood</p>
+<p class="text-lg font-bold text-primary">A+</p>
+</div>
+<div class="p-4 bg-surface-container-lowest rounded-lg">
+<p class="text-[10px] text-outline font-bold uppercase mb-1">BMI</p>
+<p class="text-lg font-bold text-primary">24.2</p>
+</div>
+</div>
+</div>
+<!-- Emergency Contact -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(25,28,29,0.06)]">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-error" data-icon="emergency">emergency</span>
+<h3 class="font-bold text-sm text-primary">Emergency Contact</h3>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden">
+<img alt="Sarah Richardson" data-alt="portrait of a woman in her 40s with professional and caring look" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdAOwV9-9mE2EScUpHkllf2tkom3vM1IFbb-axI3SM7gQhfAEuF5Yr3SVJJPfgdlKTwLXUAl3x05OCiqhnwIqtx6Y5lHlZ1H6Bk2f6nSvInQOmKpemU5Kd5yDZZMDBfX9WcoHyGw362OOnuRGUz2gGDQ9z2_g90WzV33q4htPgr8a8dDGigyf6MbMrvoRy7V0HTj2CH_ZEUfHXyt_RWbyjgp7SfnXNs0-xTWCJ9-ah4uthYg0vYRlhHx0c3NYtU7Xs4z59hbAdPW0"/>
+</div>
+<div>
+<p class="font-bold text-primary text-sm">Sarah Richardson</p>
+<p class="text-xs text-outline">Spouse • +44 7700 900542</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-xl border-t border-slate-200/15 dark:border-slate-800/15 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] flex justify-around items-center px-4 pb-6 pt-2 z-50 rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 hover:text-sky-600 transition-all active:translate-y-0.5" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-wider mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 hover:text-sky-600 transition-all active:translate-y-0.5" href="#">
+<span class="material-symbols-outlined" data-icon="monitor_heart">monitor_heart</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-wider mt-1">Health</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 hover:text-sky-600 transition-all active:translate-y-0.5" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-wider mt-1">Records</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-sky-100/50 dark:bg-sky-900/40 text-sky-900 dark:text-sky-100 rounded-xl px-4 py-1.5 transition-all active:translate-y-0.5" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-wider mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

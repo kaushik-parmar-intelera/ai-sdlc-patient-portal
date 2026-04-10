@@ -1,0 +1,25 @@
+# Core test framework
+pytest==8.2.2
+pytest-xdist==3.5.0
+pytest-asyncio==0.23.7
+pytest-html==4.1.1
+
+# Playwright (mobile web)
+playwright==1.44.0
+
+# Appium (native mobile)
+Appium-Python-Client>=3.1.1
+
+# Reporting
+allure-pytest==2.13.5
+allure-python-commons==2.13.5
+
+# Config & utilities
+PyYAML==6.0.1
+python-dotenv==1.0.1
+
+# Logging & helpers
+colorlog==6.8.2
+
+# Excel test-case report generation
+openpyxl==3.1.3

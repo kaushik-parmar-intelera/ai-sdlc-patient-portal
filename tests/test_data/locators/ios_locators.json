@@ -1,0 +1,24 @@
+{
+  "login": {
+    "title":             "//XCUIElementTypeStaticText[@name='Welcome Back']",
+    "subtitle":          "//XCUIElementTypeStaticText[@name='Please enter your credentials to access your secure portal.']",
+    "email_input":       "//XCUIElementTypeTextField[@placeholderValue='e.g. j.doe@hospital.com']",
+    "password_input":    "//XCUIElementTypeSecureTextField[@placeholderValue='••••••••']",
+    "show_hide_toggle":  "//XCUIElementTypeButton[@name='Show password' or @name='Hide password']",
+    "forgot_password":   "//XCUIElementTypeButton[@name='Forgot password?']",
+    "login_button":      "//XCUIElementTypeButton[@name='Sign In']",
+    "biometric_button":  "//XCUIElementTypeButton[@name='Biometric Sign-in']",
+    "register_link":     "//XCUIElementTypeButton[@name='Register your clinical ID']",
+    "error_message":     "//XCUIElementTypeStaticText[@name='Invalid email or password']",
+    "validation_error":  "//XCUIElementTypeStaticText[@identifier='validation-error']",
+    "dashboard_title":   "//XCUIElementTypeStaticText[@name='Dashboard']"
+  },
+  "dashboard": {
+    "title":             "//XCUIElementTypeStaticText[@name='Dashboard']",
+    "counter_label":     "//XCUIElementTypeStaticText[@name='Counter']",
+    "increment_btn":     "//XCUIElementTypeOther[@name='+']",
+    "decrement_btn":     "//XCUIElementTypeOther[@name='-']",
+    "reset_btn":         "//XCUIElementTypeOther[@name='Reset']",
+    "logout_btn":        "//XCUIElementTypeOther[@name='Logout']"
+  }
+}

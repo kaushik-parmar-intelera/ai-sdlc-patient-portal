@@ -1,0 +1,25 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"]
+    },
+    "stitch": {
+      "type": "http",
+      "url": "https://stitch.googleapis.com/mcp",
+      "headers": {
+        "X-Goog-Api-Key": "AQ.Ab8RN6JpZAYqBwhFdT8vSvZb7gGNSxSVjlFmjVOb4BXF5cujlg"
+      }
+    },
+    "jira": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["mcp-atlassian"],
+      "env": {
+        "JIRA_URL": "https://intelera-team-gbifcm47.atlassian.net",
+        "JIRA_USERNAME": "sitam.jana@intelera.tech",
+        "JIRA_API_TOKEN": "ATATT3xFfGF0D5ZFYGhN-P0Mi2xJQttIc7ViTALNvoL9MKGRC9dDP4_6k87Fs3yD47GJKP8duaLOPmRnWu1hje8L2bLIJR3iLcI5JvJVtcD1MceQrZvVHSKeEfQ_spE3xtmlEUUNobGybMNa2cgNA_D8sbl-6stYn8ycsOyS6rYaSEz9ux_0BCo=401156EE"
+      }
+    }
+  }
+}

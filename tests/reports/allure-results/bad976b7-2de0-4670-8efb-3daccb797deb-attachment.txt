@@ -1,0 +1,2 @@
+[32m2026-04-10 17:53:22 [INFO    ] drivers.driver_factory: DriverFactory.create | platform=android | cloud=local[0m
+[32m2026-04-10 17:53:22 [INFO    ] drivers.appium_driver: Starting Appium session | platform=android | device=emulator-5554 | server=http://127.0.0.1:4723/wd/hub[0m
