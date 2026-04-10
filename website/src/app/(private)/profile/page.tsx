@@ -1,6 +1,17 @@
+'use client';
+
 import React from 'react';
 
+import { useUserDetail } from '@/hooks/user/use-user-detail';
+
 export default function ProfilePage() {
+  const { userDetail, isLoading } = useUserDetail();
+
+  const displayName = isLoading
+    ? null
+    : `${userDetail?.firstName ?? ''} ${userDetail?.lastName ?? ''}`.trim() || 'Patient';
+  const displayEmail = isLoading ? null : (userDetail?.email ?? '');
+
   return (
     <>
       <div className="flex-grow pt-8 pb-12 bg-surface">
@@ -18,7 +29,7 @@ export default function ProfilePage() {
             <div className="relative flex-shrink-0">
               <div className="w-40 h-40 rounded-full border-4 border-white shadow-xl overflow-hidden bg-slate-100">
                 <img
-                  alt="Sarah Jenkins"
+                  alt={displayName ?? 'Patient'}
                   className="w-full h-full object-cover"
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1ravwuTZbWQUAkvCuVFLdiFWJhxPx4qxeBX4g8LHJ0RNKp5Q1jvyjy8sirwhRly_uEc9e2rJLS6aOC-v8xNU2sG7npyR-2sHgAB5dLLtTR5OFMW1W58v9j3Km_GIf7sh16DgVGMmFQJwkq3tx0gqZbNbsweKX_h-g2O33kz9JRTgj3fIp4po5nIHSUkG_JFe1oG4Kny_f5N0IDY3Ia592zJR-fsPAVYAiPRAW_obWcY25pfxt3jyk9NZ0w1Sz3j9PeX9Nrp9sroQ"
                 />
@@ -35,7 +46,15 @@ export default function ProfilePage() {
                 PREMIUM MEMBER
               </div>
               <h1 className="text-4xl font-headline font-extrabold text-primary tracking-tight mb-1">
-                Sarah Jenkins
+                {isLoading ? (
+                  <span
+                    aria-busy="true"
+                    aria-label="Loading patient name"
+                    className="inline-block h-10 w-52 animate-pulse rounded-md bg-slate-200"
+                  />
+                ) : (
+                  displayName
+                )}
               </h1>
               <div className="flex flex-wrap justify-center md:justify-start gap-4 text-on-surface-variant font-medium text-sm">
                 <span className="flex items-center gap-1">
@@ -81,10 +100,20 @@ export default function ProfilePage() {
                       Email Address
                     </label>
                     <p className="text-primary font-semibold flex items-center gap-2">
-                      s.jenkins@example.com
-                      <span className="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                        content_copy
-                      </span>
+                      {isLoading ? (
+                        <span
+                          aria-busy="true"
+                          aria-label="Loading email"
+                          className="inline-block h-5 w-48 animate-pulse rounded-md bg-slate-200"
+                        />
+                      ) : (
+                        <>
+                          {displayEmail}
+                          <span className="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                            content_copy
+                          </span>
+                        </>
+                      )}
                     </p>
                   </div>
                   <div>
