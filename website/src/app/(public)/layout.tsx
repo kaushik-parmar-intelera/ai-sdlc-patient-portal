@@ -1,10 +1,13 @@
-import React from 'react';
+'use client';
 
-export const metadata = {
-  title: 'Authentication | Patient Portal',
-  description: 'Register or log in to access your patient portal',
-};
+import React from 'react';
+import { Toaster } from 'sonner';
 
 export default function PublicAuthLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <Toaster position="top-right" richColors closeButton />
+    </>
+  );
 }

@@ -6,6 +6,7 @@ const validBase = {
   email: 'john@example.com',
   medicalId: 'XX-001-002-003',
   password: 'SecurePass123!',
+  confirmPassword: 'SecurePass123!',
   terms: true,
 };
 
@@ -91,7 +92,7 @@ describe('Registration Schema Verification', () => {
 
     validPasswords.forEach((password) => {
       it(`should accept valid password: "${password}"`, () => {
-        const result = registrationSchema.safeParse({ ...validBase, password });
+        const result = registrationSchema.safeParse({ ...validBase, password, confirmPassword: password });
         expect(result.success).toBe(true);
       });
     });

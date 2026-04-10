@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import { FormInput } from '@/components/atoms/form-input';
 import { registrationSchema, type RegistrationInput } from '@/schemas/registration.schema';
@@ -18,9 +19,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   onSuccess,
   className = '',
 }) => {
-  const [formError, setFormError] = useState<string | null>(null);
-  const [fieldError, setFieldError] = useState<{ field: string; message: string } | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -38,6 +36,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
       email: '',
       medicalId: '',
       password: '',
+      confirmPassword: '',
       terms: false,
     },
   });
@@ -48,43 +47,35 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
 
   const onSubmit = useCallback(
     async (data: RegistrationInput) => {
-      setFormError(null);
-      setFieldError(null);
-      setSuccessMessage(null);
       setIsSubmitting(true);
 
       try {
         const response = await registerUser(data);
 
         if (isRegistrationSuccess(response)) {
-          setSuccessMessage(
-            `Welcome, ${data.firstName}! Your account has been created successfully.`
-          );
+          toast.success(response.message || 'Account created successfully!');
           reset();
           onSuccess?.(response.userId, response.email);
         } else if (isRegistrationError(response)) {
           switch (response.errorCode) {
             case 'EMAIL_EXISTS':
-              setFormError(response.error || 'Email is already registered. Please log in or use a different email.');
+              toast.error('This email is already registered. Please sign in.');
               break;
             case 'NETWORK_ERROR':
-              setFormError('Network error: Please check your internet connection and try again.');
+              toast.error('Network error: Please check your internet connection and try again.');
               break;
             case 'SERVER_ERROR':
-              setFormError('Unable to create account. Please try again later.');
+              toast.error('Unable to create your account. Please try again later.');
               break;
             case 'INVALID_INPUT':
-              setFieldError({
-                field: response.field || 'general',
-                message: response.error || 'Invalid input. Please check your information.',
-              });
+              toast.error(response.error || 'Invalid input. Please check your information.');
               break;
             default:
-              setFormError(response.error || 'Registration failed. Please try again.');
+              toast.error(response.error || 'Registration failed. Please try again.');
           }
         }
       } catch (err) {
-        setFormError('An unexpected error occurred. Please try again.');
+        toast.error('An unexpected error occurred. Please try again.');
         console.error('Registration error:', err);
       } finally {
         setIsSubmitting(false);
@@ -101,29 +92,10 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
       noValidate
     >
       {/* Form-level error */}
-      {formError && (
-        <div role="alert" className="flex items-start gap-3 px-4 py-3 rounded-lg bg-error-container">
-          <svg className="w-5 h-5 text-error flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-          </svg>
-          <p className="text-sm font-medium text-on-error-container">{formError}</p>
-        </div>
-      )}
-
-      {/* Validation error summary — single sr-only alert for screen readers when field errors exist */}
-      {!formError && isSubmitted && Object.keys(errors).length > 0 && (
+      {/* Validation error summary — sr-only alert for screen readers */}
+      {isSubmitted && Object.keys(errors).length > 0 && (
         <div role="alert" className="sr-only">
           Please fix the errors below to continue.
-        </div>
-      )}
-
-      {/* Success */}
-      {successMessage && (
-        <div role="status" aria-live="polite" className="flex items-start gap-3 px-4 py-3 rounded-lg bg-secondary-container">
-          <svg className="w-5 h-5 text-on-secondary-container flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-          </svg>
-          <p className="text-sm font-medium text-on-secondary-container">{successMessage}</p>
         </div>
       )}
 
@@ -160,7 +132,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           label="Email Address"
           type="email"
           placeholder="you@healthcare.com"
-          error={fieldError?.field === 'email' ? fieldError.message : errors.email?.message}
+          error={errors.email?.message}
           required
           autoComplete="email"
         />
@@ -203,6 +175,16 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           type="password"
           placeholder="Minimum 12 characters"
           error={errors.password?.message}
+          required
+          autoComplete="new-password"
+        />
+
+        <FormInput
+          {...register('confirmPassword')}
+          label="Confirm Password"
+          type="password"
+          placeholder="Re-enter your password"
+          error={errors.confirmPassword?.message}
           required
           autoComplete="new-password"
         />
@@ -262,9 +244,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
         </button>
       </div>
 
-      <div aria-live="polite" aria-atomic="true" className="sr-only">
-        {formError && `Error: ${formError}`}
-      </div>
     </form>
   );
 };

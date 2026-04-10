@@ -31,9 +31,21 @@ export const registrationSchema = z.object({
     .regex(/[0-9]/, 'Must contain a number')
     .regex(/[^a-zA-Z0-9]/, 'Must contain a special character'),
 
+  confirmPassword: z
+    .string()
+    .min(1, 'Please confirm your password'),
+
   terms: z
     .boolean()
     .refine(val => val === true, 'You must agree to the Terms of Service'),
+}).superRefine((data, ctx) => {
+  if (data.confirmPassword && data.password !== data.confirmPassword) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Passwords do not match',
+      path: ['confirmPassword'],
+    });
+  }
 });
 
 export type RegistrationInput = z.infer<typeof registrationSchema>;

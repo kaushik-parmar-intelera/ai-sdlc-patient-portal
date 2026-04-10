@@ -7,6 +7,14 @@ import { validRegistrationInput } from '@/mocks/auth/register.mock';
 import { registerUser } from '@/services/auth/register.service';
 
 jest.mock('@/services/auth/register.service');
+jest.mock('sonner', () => ({
+  toast: { success: jest.fn(), error: jest.fn() },
+  Toaster: () => null,
+}));
+
+import { toast } from 'sonner';
+const mockToastSuccess = toast.success as jest.MockedFunction<typeof toast.success>;
+const mockToastError = toast.error as jest.MockedFunction<typeof toast.error>;
 
 /** Helper to fill out the full valid form */
 async function fillValidForm(user: ReturnType<typeof userEvent.setup>) {
@@ -15,6 +23,7 @@ async function fillValidForm(user: ReturnType<typeof userEvent.setup>) {
   await user.type(screen.getByLabelText(/Email Address/i), validRegistrationInput.email);
   await user.type(screen.getByLabelText(/Medical ID/i), validRegistrationInput.medicalId);
   await user.type(screen.getByLabelText(/Choose Password/i), validRegistrationInput.password);
+  await user.type(screen.getByLabelText(/Confirm Password/i), validRegistrationInput.confirmPassword);
   await user.click(screen.getByRole('checkbox', { name: /terms/i }));
 }
 
@@ -88,7 +97,7 @@ describe('RegistrationForm Component', () => {
       expect(submitButton).toBeDisabled();
     });
 
-    it('should show success message after successful registration', async () => {
+    it('should show success toast after successful registration', async () => {
       const user = userEvent.setup();
       (registerUser as jest.Mock).mockResolvedValueOnce({
         userId: 'usr_e7f4c2d9b1a5',
@@ -103,7 +112,7 @@ describe('RegistrationForm Component', () => {
       await user.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/success|welcome/i)).toBeInTheDocument();
+        expect(mockToastSuccess).toHaveBeenCalled();
       });
     });
   });
@@ -168,13 +177,14 @@ describe('RegistrationForm Component', () => {
       await user.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/required|name|email|password/i)).toBeInTheDocument();
+        const errors = screen.getAllByText(/required|name|email|password/i);
+        expect(errors.length).toBeGreaterThan(0);
       });
     });
   });
 
   describe('Server-Side Error Handling', () => {
-    it('should display server error when registration fails', async () => {
+    it('should show error toast for SERVER_ERROR', async () => {
       const user = userEvent.setup();
       (registerUser as jest.Mock).mockResolvedValueOnce({
         errorCode: 'SERVER_ERROR',
@@ -188,11 +198,11 @@ describe('RegistrationForm Component', () => {
       await user.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/Unable to create account/i)).toBeInTheDocument();
+        expect(mockToastError).toHaveBeenCalled();
       });
     });
 
-    it('should display email already registered error', async () => {
+    it('should show error toast for EMAIL_EXISTS', async () => {
       const user = userEvent.setup();
       (registerUser as jest.Mock).mockResolvedValueOnce({
         errorCode: 'EMAIL_EXISTS',
@@ -206,18 +216,18 @@ describe('RegistrationForm Component', () => {
       await user.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/Email already registered/i)).toBeInTheDocument();
+        expect(mockToastError).toHaveBeenCalledWith(
+          expect.stringMatching(/already registered/i)
+        );
       });
     });
 
-    it('should display network error message', async () => {
+    it('should show error toast for NETWORK_ERROR', async () => {
       const user = userEvent.setup();
       (registerUser as jest.Mock).mockResolvedValueOnce({
         errorCode: 'NETWORK_ERROR',
         error: 'Check your internet connection and try again.',
       });
-
-      jest.spyOn(console, 'error').mockImplementation(() => {});
 
       render(<RegistrationForm />);
       await fillValidForm(user);
@@ -226,10 +236,10 @@ describe('RegistrationForm Component', () => {
       await user.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/internet connection/i)).toBeInTheDocument();
+        expect(mockToastError).toHaveBeenCalledWith(
+          expect.stringMatching(/network error|connection/i)
+        );
       });
-
-      (console.error as jest.Mock).mockRestore();
     });
   });
 
